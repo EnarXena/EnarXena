@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnarXena</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow: hidden; cursor: pointer; }
+    .video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+    .center-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.6); padding: 40px; border-radius: 20px; text-align: center; z-index: 5; }
+    .avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #fff; }
+    .nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; margin-bottom: 15px; }
+    .social-links a { margin: 0 10px; color: #00ffff; text-decoration: none; font-weight: bold; transition: 0.3s; }
+    .social-links a:hover { text-shadow: 0 0 10px #00ffff; }
+    .sound-control { position: fixed; top: 20px; left: 20px; display: flex; align-items: center; color: #fff; font-weight: bold; cursor: pointer; z-index: 10; }
+    .volume-slider { margin-left: 10px; display: none; }
+    #particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+    /* Полноэкранный overlay для клика без текста */
+    #startOverlay {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: transparent;
+      z-index: 1000;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Overlay для старта музыки -->
+  <div id="startOverlay"></div>
+
+  <!-- Canvas для частиц -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- VideoFon -->
+  <video class="video-background" autoplay muted loop>
+    <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
+  </video>
+
+  <!-- ContainerZvyka -->
+  <div class="sound-control" id="soundControl">
+    🔊
+    <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
+  </div>
+
+  <!-- FonMuzica -->
+  <audio id="bgMusic" loop>
+    <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
+  </audio>
+
+  <!--Centr -->
+  <div class="center-box">
+    <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
+    <div class="nickname">EnarXena</div>
+    <div class="social-links">
+      <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a>
+      <a href="https://www.tiktok.com/@enarxena?_t=ZM-8zGWMAkSpfB&_r=1" target="_blank">TikTok</a>
+      <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
+    </div>
+  </div>
+
+  <script>
+    const soundControl = document.getElementById('soundControl');
+    const slider = document.getElementById('volumeSlider');
+    const music = document.getElementById('bgMusic');
+    const startOverlay = document.getElementById('startOverlay');
+
+    // Скрываем overlay и запускаем музыку
+    startOverlay.addEventListener('click', () => {
+      music.play().catch(e => console.log("Ошибка воспроизведения музыки"));
+      startOverlay.style.display = 'none';
+    });
+
+    // Ползунок громкости
+    soundControl.addEventListener('click', () => {
+      slider.style.display = slider.style.display === 'none' ? 'inline' : 'none';
+    });
+    slider.addEventListener('input', () => { music.volume = slider.value; });
+    music.volume = 0.5;
+    slider.value = 0.5;
+
+    // === Частицы за мышкой (черно-белые и маленькие) ===
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    class Particle {
+      constructor() {
+        this.x = mouse.x;
+        this.y = mouse.y;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 2;
+        this.speedY = (Math.random() - 0.5) * 2;
+        const gray = Math.floor(Math.random() * 256);
+        this.color = `rgb(${gray},${gray},${gray})`;
+      }
+      update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.1) this.size -= 0.05; }
+      draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+    }
+
+    function handleParticles() {
+      particles.push(new Particle());
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].size <= 0.1) { particles.splice(i, 1); i--; }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      handleParticles();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+  </script>
+</body>
+</html>
