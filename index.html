@@ -5,91 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EnarXena</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body, html {
-  height:100%;
-  font-family:Arial, sans-serif;
-  overflow:hidden;
-  cursor:pointer;
-  background:#000;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  cursor: pointer;
+  background: #000;
 }
 
 /* Видеофон */
 .video-background {
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  object-fit:cover;
-  z-index:-1000;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: -1000;
 }
 
 /* Канвас с частицами */
 #particleCanvas {
-  position:fixed;
-  top:0; left:0;
+  position: fixed; top:0; left:0;
   width:100%; height:100%;
-  pointer-events:none;
-  z-index:-500;
+  pointer-events: none;
+  z-index: -500;
 }
 
 /* Центр */
 .center-box {
-  position:absolute;
-  top:50%; left:50%;
-  transform:translate(-50%, -50%);
-  background:rgba(0,0,0,0.6);
-  padding:40px;
-  border-radius:20px;
-  text-align:center;
-  z-index:5;
-  color:#fff;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6);
+  padding: 40px; border-radius: 20px; text-align: center;
+  z-index: 5;
+  color: #fff;
 }
-.avatar { width:120px; height:120px; border-radius:50%; margin-bottom:20px; border:3px solid #fff; }
-.nickname { font-size:1.8rem; font-weight:bold; text-shadow:0 0 10px #fff; margin-bottom:15px; }
+.avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #fff; }
+.nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #fff; margin-bottom: 15px; }
 
-.social-links { display:flex; justify-content:center; gap:12px; margin-top:12px; }
-.social-links a img { width:30px; height:30px; filter:grayscale(100%); transition: transform 0.3s; }
+.social-links { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
+.social-links a img { width: 30px; height: 30px; filter: grayscale(100%); transition: transform 0.3s; }
 .social-links a img:hover { transform: scale(1.1); }
 
-/* Звук и инфо */
+/* Блок с ползунком и инфо */
 .sound-control {
-  position:fixed; top:20px; left:20px;
-  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
-  z-index:10;
+  position: fixed; top: 20px; left: 20px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  z-index: 10;
 }
-.volume-slider { display:none; }
+.volume-slider { display: none; width: 100px; }
 
-.info-wrapper { display:flex; align-items:flex-start; gap:8px; margin-top:4px; }
+/* Инфо */
+.info-wrapper { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }
 .info-icon {
-  width:25px; height:25px; border-radius:50%;
-  background:#000; color:#fff; display:flex; justify-content:center; align-items:center;
-  font-weight:bold; cursor:pointer; transition:transform 0.2s;
+  width: 25px; height: 25px; border-radius: 50%;
+  background: #000; color: #fff;
+  display: flex; justify-content: center; align-items: center;
+  font-weight: bold; cursor: pointer; transition: transform 0.2s;
 }
-.info-icon:hover { transform:scale(1.2); }
+.info-icon:hover { transform: scale(1.2); }
 
 .sound-icon {
-  width:25px; height:25px; background:#000;
-  display:flex; justify-content:center; align-items:center;
-  color:#fff; font-weight:bold; cursor:pointer; transition: transform 0.2s;
+  width: 25px; height: 25px; background: #000;
+  display: flex; justify-content: center; align-items: center;
+  color: #fff; font-weight: bold; cursor: pointer; transition: transform 0.2s;
 }
 .sound-icon:hover { transform: scale(1.2); }
 
 .info-popup {
-  max-height:0; overflow:hidden; background:rgba(0,0,0,0.6);
-  padding:0 12px; border-radius:10px; font-size:0.9rem; line-height:1.5;
+  max-height: 0; overflow: hidden; background: rgba(0,0,0,0.6);
+  padding: 0 12px; border-radius: 10px; font-size: 0.9rem; line-height: 1.5;
   transition: max-height 0.4s ease, padding 0.4s ease;
-  color:#fff;
+  color: #fff;
 }
-.info-popup.show { max-height:500px; padding:8px 12px; }
-.info-popup div { margin-bottom:4px; }
+.info-popup.show { max-height: 500px; padding: 8px 12px; }
+.info-popup div { margin-bottom: 4px; }
 </style>
 </head>
 <body>
 
 <canvas id="particleCanvas"></canvas>
 
+<!-- Видеофон с примером из интернета -->
 <video class="video-background" autoplay muted loop>
-  <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
+  <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
 </video>
 
 <div class="sound-control">
@@ -106,17 +105,17 @@ body, html {
 </div>
 
 <div class="center-box">
-  <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
+  <img src="https://upload.wikimedia.org/wikipedia/ru/7/73/Hokage_Minato.png" alt="Аватар" class="avatar">
   <div class="nickname">EnarXena</div>
   <div class="social-links">
-    <a href="http://discordapp.com/users/1011897465605201981" target="_blank"><img src="discord-icon-black.png" alt="Discord"></a>
-    <a href="https://www.tiktok.com/@enarxena?_t=ZM-8zGWMAkSpfB&_r=1" target="_blank"><img src="tiktok-icon-black.png" alt="TikTok"></a>
-    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank"><img src="steam_black_logo_icon_147078.png" alt="Steam"></a>
+    <a href="http://discordapp.com/users/1011897465605201981" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Discord_logo.svg" alt="Discord"></a>
+    <a href="https://www.tiktok.com/@enarxena?_t=ZM-8zGWMAkSpfB&_r=1" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/TikTok_logo.svg" alt="TikTok"></a>
+    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam"></a>
   </div>
 </div>
 
 <audio id="bgMusic" loop>
-  <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -135,7 +134,7 @@ function startMusic() {
 document.addEventListener('click', startMusic);
 document.addEventListener('touchstart', startMusic);
 
-// Ползунок громкости
+// Ползунок громкости через клик на иконку
 soundIcon.addEventListener('click', () => {
   slider.style.display = slider.style.display === 'none' ? 'inline' : 'none';
 });
@@ -143,7 +142,7 @@ slider.addEventListener('input', () => { music.volume = slider.value; });
 music.volume = 0.5;
 slider.value = 0.5;
 
-// Инфо
+// Инфо с анимацией
 infoIcon.addEventListener('click', () => { infoPopup.classList.toggle('show'); });
 
 // Частицы
@@ -170,7 +169,7 @@ class Particle {
     const gray = Math.floor(Math.random()*256);
     this.color = `rgb(${gray},${gray},${gray})`;
   }
-  update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.size>0.1)this.size-=0.05; }
+  update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.size>0.1) this.size-=0.05; }
   draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
 
