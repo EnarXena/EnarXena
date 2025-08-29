@@ -5,58 +5,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EnarXena</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body, html { height: 100%; font-family: Arial, sans-serif; color: #000; overflow: hidden; cursor: pointer; background: #000; }
-.video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-.center-box {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.6); padding: 40px;
-  border-radius: 20px; text-align: center; z-index: 5;
-  color: #fff;
-}
-.avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #fff; }
-.nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #fff; margin-bottom: 15px; }
-.social-links { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
-.social-links a img { width: 30px; height: 30px; filter: grayscale(100%); transition: transform 0.3s; }
-.social-links a img:hover { transform: scale(1.1); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body, html { height: 100%; font-family: Arial, sans-serif; color: #000; overflow: hidden; cursor: pointer; background: #000; }
+  .video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+  .center-box {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.6); padding: 40px;
+    border-radius: 20px; text-align: center; z-index: 5;
+    color: #fff;
+  }
+  .avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #fff; }
+  .nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #fff; margin-bottom: 15px; }
+  .social-links { display: flex; justify-content: center; gap: 12px; }
+  .social-links a img { width: 30px; height: 30px; filter: grayscale(100%); transition: transform 0.3s; }
+  .social-links a img:hover { transform: scale(1.1); }
 
-.sound-control {
-  position: fixed; top: 20px; left: 20px;
-  display: flex; flex-direction: column; align-items: flex-start; gap: 8px; z-index: 10;
-}
-.volume-slider { display: none; }
+  .sound-control {
+    position: fixed; top: 20px; left: 20px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px; z-index: 10;
+  }
+  .volume-slider { display: none; }
 
-.info-wrapper { display: flex; align-items: flex-start; gap: 8px; }
+  .info-wrapper { display: flex; align-items: flex-start; gap: 8px; }
 
-.info-icon {
-  width: 25px; height: 25px; border-radius: 50%;
-  background: #000; color: #fff; display: flex;
-  justify-content: center; align-items: center; font-weight: bold;
-  cursor: pointer; transition: transform 0.2s;
-}
-.info-icon:hover { transform: scale(1.2); }
+  .info-icon {
+    width: 25px; height: 25px; border-radius: 50%;
+    background: #000; color: #fff; display: flex;
+    justify-content: center; align-items: center; font-weight: bold;
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .info-icon:hover { transform: scale(1.2); }
 
-.sound-icon {
-  width: 25px; height: 25px; background: #000; display: flex; justify-content: center; align-items: center;
-  color: #fff; font-weight: bold; cursor: pointer; transition: transform 0.2s;
-}
-.sound-icon:hover { transform: scale(1.2); }
+  .sound-icon {
+    width: 25px; height: 25px; background: #000; display: flex; justify-content: center; align-items: center;
+    color: #fff; font-weight: bold; cursor: pointer; transition: transform 0.2s;
+  }
+  .sound-icon:hover { transform: scale(1.2); }
 
-.info-popup {
-  max-height: 0; overflow: hidden; background: rgba(0,0,0,0.6);
-  padding: 0 12px; border-radius: 10px; font-size: 0.9rem; line-height: 1.5;
-  transition: max-height 0.4s ease, padding 0.4s ease;
-  color: #fff;
-}
-.info-popup.show { max-height: 500px; padding: 8px 12px; }
-.info-popup div { margin-bottom: 4px; }
+  .info-popup {
+    max-height: 0; overflow: hidden; background: rgba(0,0,0,0.6);
+    padding: 0 12px; border-radius: 10px; font-size: 0.9rem; line-height: 1.5;
+    white-space: nowrap; transition: max-height 0.4s ease, padding 0.4s ease;
+    color: #fff;
+  }
+  .info-popup.show { max-height: 500px; padding: 8px 12px; }
+  .info-popup div { margin-bottom: 4px; }
 
-#particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+  #particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
 </style>
 </head>
 <body>
-
 <canvas id="particleCanvas"></canvas>
 <video class="video-background" autoplay muted loop>
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
