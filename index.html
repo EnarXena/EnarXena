@@ -209,4 +209,7 @@ class Particle{
 function handleParticles(){ particles.push(new Particle()); for(let i=0;i<particles.length;i++){ particles[i].update(); particles[i].draw(); if(particles[i].size<=0.1){ particles.splice(i,1); i--; }}}
 function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate); }
 animate();
-window
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
+</body>
+</html>
