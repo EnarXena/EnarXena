@@ -107,7 +107,7 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 
 <!-- Центр профиль -->
 <div class="center-box" id="bioBox">
-  <img src="black-reaper-kaneki.gif" alt="Аватар" class="avatar">
+  <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
   <div class="nickname">EnarXena</div>
   <div class="social-links">
     <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a> ·
@@ -199,13 +199,4 @@ class Particle{
   update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.size>0.1)this.size-=0.05; }
   draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
-function handleParticles(){ particles.push(new Particle()); for(let i=0;i<particles.length;i++){ particles[i].update(); particles[i].draw(); if(particles[i].size<=0.1){ particles.splice(i,1); i--; }}}
-function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate);}
-animate();
-window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
-</script>
-
-</body>
-</html>
-
-
+function handleParticles(){ particles.push(new Particle()); for(le
