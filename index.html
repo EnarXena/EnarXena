@@ -6,7 +6,7 @@
 <title>EnarXena</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidden; }
+body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidden; cursor:pointer; }
 
 /* Чёрный экран */
 #overlay {
@@ -17,35 +17,18 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   transition:opacity 1s ease;
   cursor:pointer;
 }
-#clickText {
-  font-size:22px; color:white; cursor:pointer;
-}
-
-/* Точки */
-.dots { 
-  display:none; 
-  font-size:22px; 
-  font-weight:bold; 
-  letter-spacing:8px;
-}
-.dot {
-  display:inline-block;
-  animation: moveDots 2.5s infinite ease-in-out;
-}
+#clickText { font-size:22px; color:white; cursor:pointer; }
+.dots { display:none; font-size:20px; font-weight:bold; letter-spacing:8px; }
+.dot { display:inline-block; animation: moveDots 2.5s infinite ease-in-out; }
 .dot:nth-child(1) { animation-delay:0s; }
 .dot:nth-child(2) { animation-delay:0.4s; }
 .dot:nth-child(3) { animation-delay:0.8s; }
-
 @keyframes moveDots {
   0% { transform:translateX(0); opacity:1; }
   50% { transform:translateX(10px); opacity:0.4; }
   100% { transform:translateX(0); opacity:1; }
 }
-
-/* Эффект тряски */
-.shake {
-  animation: shake 0.4s ease;
-}
+.shake { animation: shake 0.4s ease; }
 @keyframes shake {
   0% { transform: translate(0,0); }
   20% { transform: translate(-10px,0); }
@@ -56,12 +39,9 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
 }
 
 /* Видео фон */
-.video-background {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  object-fit:cover; z-index:-1;
-}
+.video-background { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1; }
 
-/* BIO */
+/* BIO и центр */
 .center-box {
   position: absolute;
   top: 50%; left: 50%;
@@ -72,24 +52,50 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   text-align: center;
   z-index: 5;
   opacity:0;
-  transition:opacity 1s ease;
+  transition: opacity 1s ease;
 }
 .avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #fff; }
-.nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 15px #fff; margin-bottom: 15px; }
-.social-links { display:flex; gap:10px; justify-content:center; }
-.social-links a { 
-  color: #fff; 
-  text-decoration: none; 
-  font-weight: bold; 
-  transition: 0.3s; 
-  text-shadow: 0 0 10px #fff;
-}
+.nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #fff; margin-bottom: 15px; }
+.social-links { display:flex; gap:10px; justify-content:center; margin-bottom:12px; }
+.social-links a { color:#fff; text-decoration:none; font-weight:bold; transition:0.3s; text-shadow:0 0 10px #fff; }
 .social-links a:hover { opacity:0.7; }
+
+/* Панель звука + инфо */
+.sound-control {
+  position: fixed;
+  top: 20px; left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: #fff;
+  font-weight: bold;
+  z-index: 10;
+}
+.volume-slider { display:none; }
+.info-wrapper { display:flex; align-items:flex-start; gap:8px; margin-top:4px; }
+.info-icon {
+  width:25px; height:25px; border-radius:50%;
+  background:#000; color:#fff;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; cursor:pointer; transition: transform 0.2s;
+}
+.info-icon:hover { transform: scale(1.2); }
+.info-popup {
+  max-height:0; overflow:hidden; background: rgba(0,0,0,0.6);
+  padding:0 12px; border-radius:10px; font-size:0.9rem; line-height:1.5;
+  transition:max-height 0.4s ease, padding 0.4s ease; color:#fff;
+}
+.info-popup.show { max-height:500px; padding:8px 12px; }
+.info-popup div { margin-bottom:4px; }
+
+/* Canvas частиц */
+#particleCanvas { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1; }
 </style>
 </head>
 <body>
 
-<!-- Оверлей -->
+<!-- Overlay -->
 <div id="overlay">
   <div id="clickText">Click to enter</div>
   <div class="dots" id="dots">
@@ -109,7 +115,7 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
 
-<!-- BIO -->
+<!-- Центр профиль -->
 <div class="center-box" id="bioBox">
   <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
   <div class="nickname">EnarXena</div>
@@ -120,12 +126,35 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   </div>
 </div>
 
+<!-- Панель звука и инфо -->
+<div class="sound-control" id="soundControl">
+  <div>
+    🔊
+    <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
+  </div>
+  <div class="info-wrapper">
+    <div class="info-icon" id="infoIcon">i</div>
+    <div class="info-popup" id="infoPopup">
+      <div>• участник клана Ez</div>
+      <div>• участник XIII Squad</div>
+      <div>• Dota2 · CS:GO2 · osu! player</div>
+    </div>
+  </div>
+</div>
+
+<!-- Canvas для частиц -->
+<canvas id="particleCanvas"></canvas>
+
 <script>
 const overlay = document.getElementById("overlay");
 const clickText = document.getElementById("clickText");
 const dots = document.getElementById("dots");
 const music = document.getElementById("bgMusic");
 const bioBox = document.getElementById("bioBox");
+const slider = document.getElementById("volumeSlider");
+const soundControl = document.getElementById("soundControl");
+const infoIcon = document.getElementById("infoIcon");
+const infoPopup = document.getElementById("infoPopup");
 
 let started = false;
 
@@ -133,21 +162,64 @@ let started = false;
 overlay.addEventListener("click", () => {
   if (started) return;
   started = true;
-  clickText.style.display = "none"; 
-  dots.style.display = "block";     
-  music.play().catch(err => console.log(err));
+  clickText.style.display = "none";
+  dots.style.display = "block";
+  music.play().catch(err=>console.log(err));
 
-  // Тряска экрана
+  // Тряска
   overlay.classList.add("shake");
 
-  // Через 4 секунды скрываем overlay и показываем BIO
-  setTimeout(() => {
-    overlay.style.opacity = "0";
-    bioBox.style.opacity = "1";
-    setTimeout(()=> overlay.style.display="none", 1000);
-  }, 4000);
+  // Через 4 секунды убираем overlay и показываем профиль
+  setTimeout(()=>{
+    overlay.style.opacity="0";
+    bioBox.style.opacity="1";
+    setTimeout(()=> overlay.style.display="none",1000);
+  },4000);
 });
-</script>
 
+// Ползунок громкости
+soundControl.addEventListener("click", e=>{
+  if(e.target===infoIcon) return;
+  slider.style.display = slider.style.display==="none" ? "inline" : "none";
+});
+slider.addEventListener("input", ()=>{ music.volume = slider.value; });
+music.volume=0.5;
+slider.value=0.5;
+
+// Инфо
+infoIcon.addEventListener("click", ()=>{ infoPopup.classList.toggle("show"); });
+
+// Частицы
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function updateMouse(e){
+  if(e.touches){ mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; }
+  else{ mouse.x=e.clientX; mouse.y=e.clientY; }
+}
+window.addEventListener('mousemove', updateMouse);
+window.addEventListener('touchmove', updateMouse);
+
+class Particle{
+  constructor(){
+    this.x=mouse.x; this.y=mouse.y;
+    this.size=Math.random()*2+1;
+    this.speedX=(Math.random()-0.5)*2;
+    this.speedY=(Math.random()-0.5)*2;
+    const gray=Math.floor(Math.random()*256);
+    this.color=`rgb(${gray},${gray},${gray})`;
+  }
+  update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.size>0.1)this.size-=0.05; }
+  draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+}
+function handleParticles(){ particles.push(new Particle()); for(let i=0;i<particles.length;i++){ particles[i].update(); particles[i].draw(); if(particles[i].size<=0.1){ particles.splice(i,1); i--; }}}
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate); }
+animate();
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
 </body>
 </html>
