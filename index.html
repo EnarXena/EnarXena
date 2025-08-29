@@ -41,12 +41,9 @@
       font-size: 1.4rem;
       cursor: pointer;
       user-select: none;
-      padding: 5px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.4);
       transition: 0.3s;
     }
-    .info-icon:hover { background: rgba(0,0,0,0.7); }
+    .info-icon:hover { text-shadow: 0 0 8px #00ffff; }
 
     /* всплывающий блок рядом */
     .info-popup {
@@ -58,7 +55,8 @@
       position: absolute;
       top: 50px; left: 60px;
       z-index: 11;
-      max-width: 200px;
+      max-width: 220px;
+      line-height: 1.4em;
     }
 
     #particleCanvas { 
@@ -85,10 +83,9 @@
     <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
     <div class="info-icon" id="infoIcon">ℹ️</div>
     <div class="info-popup" id="infoPopup">
-      Я — EnarXena.<br>
-      • участник клана Ez
-      • участник XIII Squad
-      • Dota2·CS:GO2·osu! player
+      • участник клана Ez <br>
+      • участник XIII Squad <br>
+      • Dota2 · CS:GO2 · osu! player
     </div>
   </div>
 
@@ -208,4 +205,3 @@
   </script>
 </body>
 </html>
-
