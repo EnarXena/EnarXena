@@ -19,18 +19,26 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
 #clickText {
   font-size:22px; color:white; cursor:pointer;
 }
-.dots { display:none; gap:12px; }
-.dot {
-  width:16px; height:16px; border-radius:50%; background:white;
-  opacity:0; transform:scale(0);
-  animation: appear 1s forwards;
-}
-.dot:nth-child(1){ animation-delay:0.3s; }
-.dot:nth-child(2){ animation-delay:0.8s; }
-.dot:nth-child(3){ animation-delay:1.3s; }
 
-@keyframes appear {
-  to { opacity:1; transform:scale(1); }
+/* Точки (жирным текстом) */
+.dots { 
+  display:none; 
+  font-size:40px; 
+  font-weight:bold; 
+  letter-spacing:5px;
+}
+.dot {
+  display:inline-block;
+  animation: shrink 1.2s infinite;
+}
+.dot:nth-child(1) { animation-delay:0s; }
+.dot:nth-child(2) { animation-delay:0.4s; }
+.dot:nth-child(3) { animation-delay:0.8s; }
+
+@keyframes shrink {
+  0% { transform:scale(1); opacity:1; }
+  50% { transform:scale(0.3); opacity:0.3; }
+  100% { transform:scale(1); opacity:1; }
 }
 
 /* Видео фон */
@@ -46,16 +54,18 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
 <div id="overlay">
   <div id="clickText">Click to enter</div>
   <div class="dots" id="dots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
+    <span class="dot">•</span>
+    <span class="dot">•</span>
+    <span class="dot">•</span>
   </div>
 </div>
 
+<!-- Видео фон -->
 <video class="video-background" autoplay muted loop>
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
 </video>
 
+<!-- Музыка -->
 <audio id="bgMusic" loop>
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
@@ -66,16 +76,17 @@ const clickText = document.getElementById("clickText");
 const dots = document.getElementById("dots");
 const music = document.getElementById("bgMusic");
 
-// Когда кликаем "Click to enter"
+// Нажатие на "Click to enter"
 clickText.addEventListener("click", () => {
-  clickText.style.display = "none"; // убираем текст
-  dots.style.display = "flex";      // показываем точки
+  clickText.style.display = "none"; // скрыть текст
+  dots.style.display = "block";     // показать точки
   music.play().catch(err => console.log(err));
 });
 
-// Проверяем время музыки
+// Убираем оверлей, когда звучит "мой haunt"
 music.addEventListener("timeupdate", () => {
-  if (music.currentTime >= 12) { // ⚡ поставь время начала слов
+  // ⚡ Укажи точное время начала "мой haunt"
+  if (music.currentTime >= 27) { // например, 27 секунд
     overlay.style.opacity = "0";
     setTimeout(()=> overlay.style.display="none", 1000);
   }
