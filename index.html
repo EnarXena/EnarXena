@@ -36,28 +36,28 @@
     }
     .volume-slider { display: none; }
 
-    /* Иконка инфо (без кружка) */
+    /* Значок ℹ️ */
     .info-icon {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       cursor: pointer;
       user-select: none;
       transition: 0.3s;
     }
     .info-icon:hover { text-shadow: 0 0 8px #00ffff; }
 
-    /* Блок описания */
+    /* Блок описания — вертикально вниз */
     .info-popup {
       display: none;
       margin-top: 5px;
       background: rgba(0, 0, 0, 0.6);
-      padding: 5px 10px;
+      padding: 8px 12px;
       border-radius: 10px;
       font-size: 0.9rem;
+      line-height: 1.5;
     }
 
-    /* Список описания в одну строку */
-    .info-popup span {
-      margin-right: 15px;
+    .info-popup div {
+      margin-bottom: 5px;
     }
 
     #particleCanvas { 
@@ -84,13 +84,13 @@
       🔊
       <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
     </div>
-    <div class="info-icon" id="infoIcon">i</div>
+    <div class="info-icon" id="infoIcon">ℹ️</div>
     <div class="info-popup" id="infoPopup">
-      <span>• участник клана Ez</span>
-      <span>• участник XIII Squad</span>
-      <span>• Dota2</span>
-      <span>• CS:GO2</span>
-      <span>• osu! player</span>
+      <div>• участник клана Ez</div>
+      <div>• участник XIII Squad</div>
+      <div>• Dota2</div>
+      <div>• CS:GO2</div>
+      <div>• osu! player</div>
     </div>
   </div>
 
