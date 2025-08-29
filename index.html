@@ -5,232 +5,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EnarXena</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow: hidden; cursor: pointer; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidden; }
 
-/* Чёрный экран-заставка */
+/* Чёрный экран */
 #overlay {
-  position: fixed; top:0; left:0; width:100%; height:100%;
+  position:fixed; top:0; left:0; width:100%; height:100%;
   background:black; z-index:100;
   display:flex; align-items:center; justify-content:center;
-  flex-direction:column; gap:15px;
-  transition: opacity 1s ease;
+  flex-direction:column; gap:20px;
+  transition:opacity 1s ease;
 }
-.dots {
-  display:flex; gap:12px;
+#clickText {
+  font-size:22px; color:white; cursor:pointer;
 }
+.dots { display:none; gap:12px; }
 .dot {
-  width:18px; height:18px; border-radius:50%; background:white;
-  animation: pulse 1.5s infinite;
+  width:16px; height:16px; border-radius:50%; background:white;
+  opacity:0; transform:scale(0);
+  animation: appear 1s forwards;
 }
-.dot:nth-child(2){ animation-delay:0.3s; }
-.dot:nth-child(3){ animation-delay:0.6s; }
+.dot:nth-child(1){ animation-delay:0.3s; }
+.dot:nth-child(2){ animation-delay:0.8s; }
+.dot:nth-child(3){ animation-delay:1.3s; }
 
-@keyframes pulse {
-  0%,100% { transform:scale(1); opacity:1; }
-  50% { transform:scale(0.5); opacity:0.3; }
+@keyframes appear {
+  to { opacity:1; transform:scale(1); }
 }
 
 /* Видео фон */
-.video-background { 
-  position: fixed; top:0; left:0; width:100%; height:100%; 
-  object-fit: cover; z-index: -1; 
+.video-background {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  object-fit:cover; z-index:-1;
 }
-
-/* Частицы */
-#particleCanvas { 
-  position: fixed; top:0; left:0; width:100%; height:100%; 
-  pointer-events: none; z-index:1; 
-}
-
-/* Центр */
-.center-box {
-  position: absolute; top:50%; left:50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.6);
-  padding:40px; border-radius:20px;
-  text-align:center; z-index:5;
-  transition: transform 0.2s ease;
-}
-.center-box:hover { transform: translate(-50%, -50%) scale(1.05); }
-
-.avatar { 
-  width:120px; height:120px; border-radius:50%; margin-bottom:20px; border:3px solid #fff; 
-}
-
-/* Ник с анимацией свечения */
-.nickname { 
-  font-size:1.8rem; font-weight:bold; margin-bottom:15px;
-  color:#fff;
-  text-shadow: 0 0 5px #fff, 0 0 10px #000;
-  animation: glow 2s infinite alternate;
-}
-@keyframes glow {
-  from { text-shadow: 0 0 5px #fff, 0 0 10px #000; }
-  to   { text-shadow: 0 0 15px #fff, 0 0 30px #000; }
-}
-
-/* Соцсети */
-.social-links { 
-  display:flex; flex-direction:row; gap:8px; justify-content:center; margin-top:12px;
-}
-.social-links a {
-  color: #ccc;
-  text-decoration: none;
-  font-weight: bold;
-  font-size:1rem;
-  transition: all 0.3s ease;
-}
-.social-links a:hover {
-  color: #fff;
-  text-shadow: 0 0 10px #fff, 0 0 20px #000;
-}
-.separator {
-  color: #888;
-  font-weight: bold;
-}
-
-/* Панель звука и инфо */
-.sound-control {
-  position: fixed; top:20px; left:20px;
-  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
-  color:#fff; font-weight:bold; z-index:10;
-}
-.volume-slider { display:none; width:120px; }
-
-/* Инфо */
-.info-wrapper { display:flex; align-items:flex-start; gap:8px; margin-top:4px; }
-.info-icon {
-  font-size:1.3rem; cursor:pointer; user-select:none; transition:0.3s;
-}
-.info-icon:hover { text-shadow:0 0 8px #fff; }
-.info-popup {
-  max-height:0; overflow:hidden; background: rgba(0,0,0,0.6); padding:0 12px;
-  border-radius:10px; font-size:0.9rem; line-height:1.5; transition: max-height 0.4s ease, padding 0.4s ease;
-  margin-top:4px;
-}
-.info-popup.show { max-height:200px; padding:8px 12px; }
-.info-popup div { margin-bottom:4px; }
 </style>
 </head>
 <body>
 
-<!-- Прелоадер -->
+<!-- Оверлей -->
 <div id="overlay">
-  <div class="dots">
+  <div id="clickText">Click to enter</div>
+  <div class="dots" id="dots">
     <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
   </div>
-  <div style="color:white;font-size:14px;opacity:0.6;">Нажмите чтобы начать</div>
 </div>
-
-<canvas id="particleCanvas"></canvas>
 
 <video class="video-background" autoplay muted loop>
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
 </video>
 
-<!-- Панель звука + инфо -->
-<div class="sound-control" id="soundControl">
-  <div>
-    🔊
-    <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
-  </div>
-
-  <div class="info-wrapper">
-    <div class="info-icon" id="infoIcon">ℹ️</div>
-    <div class="info-popup" id="infoPopup">
-      <div>• участник клана Ez</div>
-      <div>• участник XIII Squad</div>
-      <div>• Dota2 · CS:GO2 · osu! player</div>
-    </div>
-  </div>
-</div>
-
 <audio id="bgMusic" loop>
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
 
-<!-- Центр -->
-<div class="center-box">
-  <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
-  <div class="nickname">EnarXena</div>
-
-  <div class="social-links">
-    <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a>
-    <span class="separator">·</span>
-    <a href="https://www.tiktok.com/@enarxena?_t=ZM-8zGWMAkSpfB&_r=1" target="_blank">TikTok</a>
-    <span class="separator">·</span>
-    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
-  </div>
-</div>
-
 <script>
-const music = document.getElementById('bgMusic');
-const slider = document.getElementById('volumeSlider');
-const infoIcon = document.getElementById('infoIcon');
-const infoPopup = document.getElementById('infoPopup');
-const soundControl = document.getElementById('soundControl');
-const overlay = document.getElementById('overlay');
+const overlay = document.getElementById("overlay");
+const clickText = document.getElementById("clickText");
+const dots = document.getElementById("dots");
+const music = document.getElementById("bgMusic");
 
-// Запуск при нажатии
-overlay.addEventListener('click', ()=>{
-  overlay.style.opacity = '0';
-  setTimeout(()=> overlay.style.display='none', 1000);
-  music.play().catch(e=>console.log("Ошибка воспроизведения музыки"));
+// Когда кликаем "Click to enter"
+clickText.addEventListener("click", () => {
+  clickText.style.display = "none"; // убираем текст
+  dots.style.display = "flex";      // показываем точки
+  music.play().catch(err => console.log(err));
 });
 
-// Ползунок громкости
-soundControl.addEventListener('click',(e)=>{
-  if(e.target.id==="infoIcon") return;
-  slider.style.display = slider.style.display==='none'?'inline':'none';
+// Проверяем время музыки
+music.addEventListener("timeupdate", () => {
+  if (music.currentTime >= 12) { // ⚡ поставь время начала слов
+    overlay.style.opacity = "0";
+    setTimeout(()=> overlay.style.display="none", 1000);
+  }
 });
-slider.addEventListener('input',()=>{ music.volume = slider.value; });
-music.volume = 0.5; slider.value = 0.5;
-
-// Инфо
-infoIcon.addEventListener('click',()=>{ infoPopup.classList.toggle('show'); });
-
-// Частицы
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-let particles=[]; 
-let mouse={x:window.innerWidth/2, y:window.innerHeight/2};
-canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-
-function updateMouse(e){
-  if(e.touches){ mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
-  else{ mouse.x = e.clientX; mouse.y = e.clientY; }
-}
-window.addEventListener('mousemove',updateMouse);
-window.addEventListener('touchmove',updateMouse);
-
-class Particle{
-  constructor(){
-    this.x=mouse.x; this.y=mouse.y;
-    this.size=Math.random()*2+1;
-    this.speedX=(Math.random()-0.5)*2;
-    this.speedY=(Math.random()-0.5)*2;
-    const gray=Math.floor(Math.random()*256);
-    this.color=`rgb(${gray},${gray},${gray})`;
-  }
-  update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.size>0.1)this.size-=0.05; }
-  draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
-}
-
-function handleParticles(){
-  particles.push(new Particle());
-  for(let i=0;i<particles.length;i++){
-    particles[i].update(); particles[i].draw();
-    if(particles[i].size<=0.1){ particles.splice(i,1); i--; }
-  }
-}
-
-function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate); }
-animate();
-
-window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
 </script>
+
 </body>
 </html>
