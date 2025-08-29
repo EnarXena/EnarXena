@@ -15,6 +15,7 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   display:flex; align-items:center; justify-content:center;
   flex-direction:column; gap:20px;
   transition:opacity 1s ease;
+  cursor:pointer;
 }
 #clickText {
   font-size:22px; color:white; cursor:pointer;
@@ -23,21 +24,21 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
 /* Точки */
 .dots { 
   display:none; 
-  font-size:26px; 
+  font-size:22px; 
   font-weight:bold; 
   letter-spacing:8px;
 }
 .dot {
   display:inline-block;
-  animation: moveDots 1.2s infinite ease-in-out;
+  animation: moveDots 2.5s infinite ease-in-out;
 }
 .dot:nth-child(1) { animation-delay:0s; }
-.dot:nth-child(2) { animation-delay:0.2s; }
-.dot:nth-child(3) { animation-delay:0.4s; }
+.dot:nth-child(2) { animation-delay:0.4s; }
+.dot:nth-child(3) { animation-delay:0.8s; }
 
 @keyframes moveDots {
   0% { transform:translateX(0); opacity:1; }
-  50% { transform:translateX(6px); opacity:0.5; }
+  50% { transform:translateX(10px); opacity:0.4; }
   100% { transform:translateX(0); opacity:1; }
 }
 
@@ -113,17 +114,21 @@ const dots = document.getElementById("dots");
 const music = document.getElementById("bgMusic");
 const bioBox = document.getElementById("bioBox");
 
-// Нажатие на "Click to enter"
-clickText.addEventListener("click", () => {
+let started = false;
+
+// Любой клик по экрану
+overlay.addEventListener("click", () => {
+  if (started) return;
+  started = true;
   clickText.style.display = "none"; // скрыть текст
   dots.style.display = "block";     // показать точки
   music.play().catch(err => console.log(err));
 });
 
-// Убираем оверлей, когда звучит "мой haunt"
+// Убираем оверлей, когда звучит "мой haunt это super nova"
 music.addEventListener("timeupdate", () => {
-  // ⚡ Укажи точное время начала "мой haunt"
-  if (music.currentTime >= 27) { // пример: 27 сек
+  // ⚡ Укажи точное время в секундах, например 32.5
+  if (music.currentTime >= 32.5) { 
     overlay.style.opacity = "0";
     bioBox.style.opacity = "1";
     setTimeout(()=> overlay.style.display="none", 1000);
