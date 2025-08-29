@@ -28,6 +28,11 @@ body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow
 .avatar { width:120px; height:120px; border-radius:50%; margin-bottom:20px; border:3px solid #fff; }
 .nickname { font-size:1.8rem; font-weight:bold; text-shadow:0 0 10px #00ffff,0 0 20px #00ffff; margin-bottom:15px; }
 
+/* Соцсети */
+.social-links { display:flex; justify-content:center; gap:12px; margin-top:12px; }
+.social-links a img { width:30px; height:30px; filter: grayscale(100%); transition: transform 0.3s; }
+.social-links a img:hover { transform: scale(1.2); }
+
 /* Панель звука и инфо */
 .sound-control {
   position: fixed; top:20px; left:20px;
@@ -86,6 +91,18 @@ body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow
 <div class="center-box">
   <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
   <div class="nickname">EnarXena</div>
+
+  <div class="social-links">
+    <a href="http://discordapp.com/users/1011897465605201981" target="_blank">
+      <img src="discord-black.png" alt="Discord">
+    </a>
+    <a href="https://www.tiktok.com/@enarxena?_t=ZM-8zGWMAkSpfB&_r=1" target="_blank">
+      <img src="tiktok-black.png" alt="TikTok">
+    </a>
+    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">
+      <img src="steam-black.png" alt="Steam">
+    </a>
+  </div>
 </div>
 
 <script>
