@@ -27,14 +27,12 @@
       position: fixed;
       top: 20px; left: 20px;
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
       color: #fff;
       font-weight: bold;
-      cursor: pointer;
       z-index: 10;
-      flex-direction: column; /* теперь звук сверху, описание под ним */
-      align-items: flex-start;
     }
     .volume-slider { display: none; }
 
@@ -47,7 +45,7 @@
     }
     .info-icon:hover { text-shadow: 0 0 8px #00ffff; }
 
-    /* Блок описания в ряд */
+    /* Блок описания */
     .info-popup {
       display: none;
       margin-top: 5px;
@@ -55,7 +53,11 @@
       padding: 5px 10px;
       border-radius: 10px;
       font-size: 0.9rem;
-      white-space: nowrap;
+    }
+
+    /* Список описания в одну строку */
+    .info-popup span {
+      margin-right: 15px;
     }
 
     #particleCanvas { 
@@ -84,7 +86,11 @@
     </div>
     <div class="info-icon" id="infoIcon">i</div>
     <div class="info-popup" id="infoPopup">
-      • участник клана Ez · участник XIII Squad · Dota2 · CS:GO2 · osu! player
+      <span>• участник клана Ez</span>
+      <span>• участник XIII Squad</span>
+      <span>• Dota2</span>
+      <span>• CS:GO2</span>
+      <span>• osu! player</span>
     </div>
   </div>
 
