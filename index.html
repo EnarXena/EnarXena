@@ -51,13 +51,19 @@
     .info-icon:hover { text-shadow: 0 0 8px #00ffff; }
 
     .info-popup {
-      display: none;
+      max-height: 0;
+      overflow: hidden;
       background: rgba(0, 0, 0, 0.6);
-      padding: 8px 12px;
+      padding: 0 12px;
       border-radius: 10px;
       font-size: 0.9rem;
       line-height: 1.5;
       white-space: nowrap;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+    .info-popup.show {
+      max-height: 500px;
+      padding: 8px 12px;
     }
     .info-popup div { margin-bottom: 4px; }
 
@@ -138,9 +144,9 @@
     music.volume = 0.5;
     slider.value = 0.5;
 
-    // Инфо
+    // Инфо с анимацией
     infoIcon.addEventListener('click', () => {
-      infoPopup.style.display = infoPopup.style.display === 'block' ? 'none' : 'block';
+      infoPopup.classList.toggle('show');
     });
 
     // === Частицы за мышкой/пальцем ===
