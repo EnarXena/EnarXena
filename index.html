@@ -27,8 +27,21 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   100%{transform:translateX(0);opacity:1}
 }
 
+/* Fallback background */
+.background-fallback {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
 /* Video background */
-.video-background{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
+.video-background {
+  position:fixed;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:-1;background:transparent;
+}
 
 /* Center profile */
 .center-box{
@@ -41,10 +54,9 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 .nickname{font-size:1.8rem;font-weight:700;text-shadow:0 0 10px #fff;margin-bottom:12px}
 .social-links{display:flex;gap:8px;justify-content:center;align-items:center}
 .social-links a{color:#fff;text-decoration:none;font-weight:700;padding:2px 6px}
-.social-links a::before{content:"";} /* we already use separators in markup */
+.social-links a::before{content:"";}
 
 /* Sound & info panel */
-/* NOTE: z-index is higher than overlay so controls remain clickable while overlay visible */
 .sound-control{position:fixed;left:20px;top:20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;z-index:200}
 .sound-wrapper{display:flex;align-items:center;gap:8px}
 .sound-icon,.info-icon{
@@ -67,7 +79,10 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 
 <canvas id="particleCanvas"></canvas>
 
-<!-- video background (keep muted on load, audio plays from <audio>) -->
+<!-- fallback background -->
+<div class="background-fallback"></div>
+
+<!-- video background -->
 <video class="video-background" autoplay muted loop playsinline>
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
 </video>
@@ -82,7 +97,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   </div>
 </div>
 
-<!-- sound & info controls (kept above overlay so they remain clickable) -->
+<!-- sound & info controls -->
 <div class="sound-control" id="soundControl">
   <div class="sound-wrapper">
     <div class="sound-icon" id="soundIcon" title="Volume">🔊</div>
@@ -98,7 +113,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   </div>
 </div>
 
-<!-- audio (loop enabled) -->
+<!-- audio -->
 <audio id="bgMusic" loop preload="auto">
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
@@ -117,7 +132,6 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 </div>
 
 <script>
-/* ELEMENTS */
 const overlay = document.getElementById('overlay');
 const clickText = document.getElementById('clickText');
 const dots = document.getElementById('dots');
@@ -128,14 +142,13 @@ const volumeSlider = document.getElementById('volumeSlider');
 const infoIcon = document.getElementById('infoIcon');
 const infoPopup = document.getElementById('infoPopup');
 
-/* particles canvas setup */
+/* particles */
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-/* particle state */
 let particles = [];
 let pointer = { x: window.innerWidth/2, y: window.innerHeight/2 };
 function updatePointer(e){
@@ -171,31 +184,20 @@ function handleParticles(){
     if(particles[i].size <= 0.09){ particles.splice(i,1); i--; }
   }
 }
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  handleParticles();
-  requestAnimationFrame(animate);
-}
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate); }
 animate();
 
-/* Overlay click logic */
-/* Make overlay clickable everywhere except when click targets are inside controls */
+/* Overlay click */
 let started = false;
 overlay.addEventListener('click', (e) => {
-  // if clicked a control element (sound or info) — ignore overlay start
   if (e.target.closest('.sound-control')) return;
   if (started) return;
   started = true;
 
-  // show dots, hide click text
   clickText.style.display = 'none';
   dots.style.display = 'flex';
-
-  // try play audio (may require user gesture — we are inside click)
   music.play().catch(err => console.log('play failed', err));
 
-  // after 6.75s show profile and hide overlay
   setTimeout(() => {
     overlay.style.opacity = '0';
     bioBox.style.opacity = '1';
@@ -204,34 +206,19 @@ overlay.addEventListener('click', (e) => {
   }, 6750);
 });
 
-/* Sound icon toggles slider (slider placed to the right visually) */
+/* Sound icon toggles slider */
 soundIcon.addEventListener('click', (e) => {
-  e.stopPropagation(); // prevent overlay handler
+  e.stopPropagation();
   volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
 });
-
-/* Volume control */
-volumeSlider.addEventListener('input', () => {
-  music.volume = Number(volumeSlider.value);
-});
+volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
 volumeSlider.value = 0.5; music.volume = 0.5;
 
 /* Info popup */
-infoIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  infoPopup.classList.toggle('show');
-});
+infoIcon.addEventListener('click', (e) => { e.stopPropagation(); infoPopup.classList.toggle('show'); });
 
-/* make sure clicks on controls don't start overlay when clicking them directly */
-document.querySelectorAll('.sound-control').forEach(el => {
-  el.addEventListener('click', (ev) => ev.stopPropagation());
-});
-
-/* Accessibility: allow Enter/Space on overlay to start */
-overlay.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter' || e.key === ' '){ overlay.click(); }
-});
+document.querySelectorAll('.sound-control').forEach(el => { el.addEventListener('click', (ev) => ev.stopPropagation()); });
+overlay.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ overlay.click(); } });
 </script>
 </body>
 </html>
-
