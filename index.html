@@ -42,10 +42,10 @@ body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow
 
 /* Соцсети */
 .social-links { 
-  display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px; 
+  display:flex; flex-direction:row; gap:12px; justify-content:center; margin-top:12px;
 }
 .social-links a {
-  color: #ccc; /* серый */
+  color: #ccc;
   text-decoration: none;
   font-weight: bold;
   font-size:1rem;
@@ -54,6 +54,10 @@ body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow
 .social-links a:hover {
   color: #fff;
   text-shadow: 0 0 10px #fff, 0 0 20px #000;
+}
+.separator {
+  color: #888;
+  font-weight: bold;
 }
 
 /* Панель звука и инфо */
@@ -115,7 +119,9 @@ body, html { height: 100%; font-family: Arial, sans-serif; color: #fff; overflow
 
   <div class="social-links">
     <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a>
+    <span class="separator">·</span>
     <a href="https://www.tiktok.com/@enarxena?_t=ZM-8zGWMAkSpfB&_r=1" target="_blank">TikTok</a>
+    <span class="separator">·</span>
     <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
   </div>
 </div>
