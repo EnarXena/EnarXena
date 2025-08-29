@@ -32,7 +32,7 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
 /* Видео фон */
 .video-background { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1; }
 
-/* Центр и профиль */
+/* BIO и центр */
 .center-box {
   position: absolute;
   top: 50%; left: 50%;
@@ -47,9 +47,9 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
 }
 .avatar { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #fff; }
 .nickname { font-size: 1.8rem; font-weight: bold; text-shadow: 0 0 10px #fff; margin-bottom: 15px; }
-.social-links { display:flex; gap:5px; justify-content:center; margin-bottom:12px; }
-.social-links a { color:#fff; text-decoration:none; font-weight:bold; text-shadow:0 0 10px #fff; }
-.social-links a::before { content:"• "; } /* точки между соцсетями */
+.social-links { display:flex; gap:10px; justify-content:center; margin-bottom:12px; }
+.social-links a { color:#fff; text-decoration:none; font-weight:bold; transition:0.3s; text-shadow:0 0 10px #fff; }
+.social-links a:hover { opacity:0.7; }
 
 /* Панель звука + инфо */
 .sound-control {
@@ -111,8 +111,8 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
   <div class="nickname">EnarXena</div>
   <div class="social-links">
-    <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a>
-    <a href="https://www.tiktok.com/@enarxena" target="_blank">TikTok</a>
+    <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a> ·
+    <a href="https://www.tiktok.com/@enarxena" target="_blank">TikTok</a> ·
     <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
   </div>
 </div>
@@ -133,7 +133,7 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   </div>
 </div>
 
-<!-- Canvas частиц -->
+<!-- Canvas для частиц -->
 <canvas id="particleCanvas"></canvas>
 
 <script>
