@@ -42,6 +42,19 @@ body,html { height:100%; font-family:Arial,sans-serif; color:#fff; overflow:hidd
   100% { transform:translateX(0); opacity:1; }
 }
 
+/* Эффект тряски */
+.shake {
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0% { transform: translate(0,0); }
+  20% { transform: translate(-10px,0); }
+  40% { transform: translate(10px,0); }
+  60% { transform: translate(-7px,0); }
+  80% { transform: translate(7px,0); }
+  100% { transform: translate(0,0); }
+}
+
 /* Видео фон */
 .video-background {
   position:fixed; top:0; left:0; width:100%; height:100%;
@@ -120,19 +133,19 @@ let started = false;
 overlay.addEventListener("click", () => {
   if (started) return;
   started = true;
-  clickText.style.display = "none"; // скрыть текст
-  dots.style.display = "block";     // показать точки
+  clickText.style.display = "none"; 
+  dots.style.display = "block";     
   music.play().catch(err => console.log(err));
-});
 
-// Убираем оверлей, когда звучит "мой haunt это super nova"
-music.addEventListener("timeupdate", () => {
-  // ⚡ Укажи точное время в секундах, например 32.5
-  if (music.currentTime >= 32.5) { 
+  // Тряска экрана
+  overlay.classList.add("shake");
+
+  // Через 4 секунды скрываем overlay и показываем BIO
+  setTimeout(() => {
     overlay.style.opacity = "0";
     bioBox.style.opacity = "1";
     setTimeout(()=> overlay.style.display="none", 1000);
-  }
+  }, 4000);
 });
 </script>
 
