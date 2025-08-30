@@ -6,14 +6,30 @@
 <title>EnarXena</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cursor:pointer;background:#000}
+html,body{
+  height:100%;
+  font-family:Arial,sans-serif;
+  color:#fff;
+  overflow:hidden;
+  cursor:pointer;
+  background:#000; /* запасной фон */
+}
 
-/* Overlay (чисто черный) */
+/* Video background */
+.video-background{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0; /* всегда на фоне */
+}
+
+/* Overlay */
 #overlay{
   position:fixed;
   inset:0;
-  background-color:#000 !important;
-  opacity:1 !important;
+  background:rgba(0,0,0,0.85); /* полупрозрачное затемнение */
   z-index:100;
   display:flex;
   flex-direction:column;
@@ -33,9 +49,6 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   50%{transform:translateX(10px);opacity:.35}
   100%{transform:translateX(0);opacity:1}
 }
-
-/* Video background */
-.video-background{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
 
 /* Center profile */
 .center-box{
@@ -108,7 +121,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
 
-<!-- profile -->
+<!-- center profile -->
 <div class="center-box" id="bioBox" aria-hidden="true">
   <img class="avatar" src="Hokage_Minato.webp" alt="Аватар">
   <div class="nickname">EnarXena</div>
@@ -122,6 +135,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 </div>
 
 <script>
+/* ELEMENTS */
 const overlay = document.getElementById('overlay');
 const clickText = document.getElementById('clickText');
 const dots = document.getElementById('dots');
@@ -132,7 +146,7 @@ const volumeSlider = document.getElementById('volumeSlider');
 const infoIcon = document.getElementById('infoIcon');
 const infoPopup = document.getElementById('infoPopup');
 
-/* particles */
+/* particles canvas setup */
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -165,6 +179,7 @@ class Particle {
   }
   draw(){ ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
+
 function handleParticles(){
   particles.push(new Particle());
   for(let i=0;i<particles.length;i++){
@@ -173,6 +188,7 @@ function handleParticles(){
     if(particles[i].size <= 0.09){ particles.splice(i,1); i--; }
   }
 }
+
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   handleParticles();
@@ -180,7 +196,7 @@ function animate(){
 }
 animate();
 
-/* overlay click */
+/* Overlay click logic */
 let started = false;
 overlay.addEventListener('click', (e) => {
   if (e.target.closest('.sound-control')) return;
@@ -200,7 +216,7 @@ overlay.addEventListener('click', (e) => {
   }, 6750);
 });
 
-/* sound control */
+/* Sound icon toggles slider */
 soundIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
@@ -208,10 +224,20 @@ soundIcon.addEventListener('click', (e) => {
 volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
 volumeSlider.value = 0.5; music.volume = 0.5;
 
-/* info control */
+/* Info popup */
 infoIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   infoPopup.classList.toggle('show');
+});
+
+/* Prevent overlay trigger by controls */
+document.querySelectorAll('.sound-control').forEach(el => {
+  el.addEventListener('click', (ev) => ev.stopPropagation());
+});
+
+/* Accessibility: allow Enter/Space */
+overlay.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' || e.key === ' '){ overlay.click(); }
 });
 </script>
 </body>
