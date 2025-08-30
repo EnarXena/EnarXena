@@ -6,37 +6,20 @@
 <title>EnarXena</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{
-  height:100%;
-  font-family:Arial,sans-serif;
-  color:#fff;
-  overflow:hidden;
-  cursor:pointer;
-  background:#000; /* запасной фон */
-}
-
-/* Video background */
-.video-background{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index:0; /* всегда на фоне */
-}
+html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cursor:pointer;background:#000}
 
 /* Overlay */
 #overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.85); /* полупрозрачное затемнение */
+  background:#000; /* в начале полностью чёрный */
   z-index:100;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   gap:20px;
-  transition:opacity .9s ease;
+  transition:opacity .9s ease, background 1.2s ease;
 }
 #clickText{font-size:22px;color:#fff;user-select:none}
 .dots{display:none;font-size:18px;font-weight:700;letter-spacing:10px}
@@ -49,6 +32,9 @@ html,body{
   50%{transform:translateX(10px);opacity:.35}
   100%{transform:translateX(0);opacity:1}
 }
+
+/* Video background */
+.video-background{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
 
 /* Center profile */
 .center-box{
@@ -90,7 +76,7 @@ html,body{
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
 </video>
 
-<!-- overlay -->
+<!-- overlay (click to start) -->
 <div id="overlay" aria-hidden="false">
   <div id="clickText">Click to enter</div>
   <div class="dots" id="dots">
@@ -121,7 +107,7 @@ html,body{
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
 
-<!-- center profile -->
+<!-- profile -->
 <div class="center-box" id="bioBox" aria-hidden="true">
   <img class="avatar" src="Hokage_Minato.webp" alt="Аватар">
   <div class="nickname">EnarXena</div>
@@ -135,7 +121,6 @@ html,body{
 </div>
 
 <script>
-/* ELEMENTS */
 const overlay = document.getElementById('overlay');
 const clickText = document.getElementById('clickText');
 const dots = document.getElementById('dots');
@@ -146,7 +131,7 @@ const volumeSlider = document.getElementById('volumeSlider');
 const infoIcon = document.getElementById('infoIcon');
 const infoPopup = document.getElementById('infoPopup');
 
-/* particles canvas setup */
+/* particles canvas */
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -172,14 +157,9 @@ class Particle {
     const g = Math.floor(Math.random()*180 + 20);
     this.color = `rgb(${g},${g},${g})`;
   }
-  update(){
-    this.x += this.vx;
-    this.y += this.vy;
-    if(this.size > 0.09) this.size -= 0.03;
-  }
+  update(){ this.x += this.vx; this.y += this.vy; if(this.size > 0.09) this.size -= 0.03; }
   draw(){ ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
-
 function handleParticles(){
   particles.push(new Particle());
   for(let i=0;i<particles.length;i++){
@@ -188,12 +168,7 @@ function handleParticles(){
     if(particles[i].size <= 0.09){ particles.splice(i,1); i--; }
   }
 }
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  handleParticles();
-  requestAnimationFrame(animate);
-}
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate); }
 animate();
 
 /* Overlay click logic */
@@ -208,6 +183,12 @@ overlay.addEventListener('click', (e) => {
 
   music.play().catch(err => console.log('play failed', err));
 
+  // фон становится полупрозрачным через 0.5 сек
+  setTimeout(() => {
+    overlay.style.background = "rgba(0,0,0,0.85)";
+  }, 500);
+
+  // через 6.75 сек — убираем overlay
   setTimeout(() => {
     overlay.style.opacity = '0';
     bioBox.style.opacity = '1';
@@ -216,29 +197,16 @@ overlay.addEventListener('click', (e) => {
   }, 6750);
 });
 
-/* Sound icon toggles slider */
+/* sound + info */
 soundIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
 });
 volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
 volumeSlider.value = 0.5; music.volume = 0.5;
-
-/* Info popup */
-infoIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  infoPopup.classList.toggle('show');
-});
-
-/* Prevent overlay trigger by controls */
-document.querySelectorAll('.sound-control').forEach(el => {
-  el.addEventListener('click', (ev) => ev.stopPropagation());
-});
-
-/* Accessibility: allow Enter/Space */
-overlay.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter' || e.key === ' '){ overlay.click(); }
-});
+infoIcon.addEventListener('click', (e) => { e.stopPropagation(); infoPopup.classList.toggle('show'); });
+document.querySelectorAll('.sound-control').forEach(el => { el.addEventListener('click', (ev) => ev.stopPropagation()); });
+overlay.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ overlay.click(); } });
 </script>
 </body>
 </html>
