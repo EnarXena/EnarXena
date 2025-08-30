@@ -6,13 +6,36 @@
 <title>EnarXena</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cursor:pointer;background:#000}
+html,body{
+  height:100%;
+  font-family:Arial,sans-serif;
+  color:#fff;
+  overflow:hidden;
+  cursor:pointer;
+  background:#000; /* запасной фон */
+}
+
+/* Video background */
+.video-background{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0; /* всегда на фоне */
+}
 
 /* Overlay */
 #overlay{
-  position:fixed;inset:0;
-  background:#000; z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85); /* полупрозрачное затемнение */
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
   transition:opacity .9s ease;
 }
 #clickText{font-size:22px;color:#fff;user-select:none}
@@ -27,9 +50,6 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   100%{transform:translateX(0);opacity:1}
 }
 
-/* Video background */
-.video-background{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
-
 /* Center profile */
 .center-box{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -41,10 +61,8 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 .nickname{font-size:1.8rem;font-weight:700;text-shadow:0 0 10px #fff;margin-bottom:12px}
 .social-links{display:flex;gap:8px;justify-content:center;align-items:center}
 .social-links a{color:#fff;text-decoration:none;font-weight:700;padding:2px 6px}
-.social-links a::before{content:"";} /* we already use separators in markup */
 
 /* Sound & info panel */
-/* NOTE: z-index is higher than overlay so controls remain clickable while overlay visible */
 .sound-control{position:fixed;left:20px;top:20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;z-index:200}
 .sound-wrapper{display:flex;align-items:center;gap:8px}
 .sound-icon,.info-icon{
@@ -67,12 +85,12 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 
 <canvas id="particleCanvas"></canvas>
 
-<!-- video background (keep muted on load, audio plays from <audio>) -->
+<!-- video background -->
 <video class="video-background" autoplay muted loop playsinline>
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
 </video>
 
-<!-- overlay (click to start) -->
+<!-- overlay -->
 <div id="overlay" aria-hidden="false">
   <div id="clickText">Click to enter</div>
   <div class="dots" id="dots">
@@ -82,7 +100,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   </div>
 </div>
 
-<!-- sound & info controls (kept above overlay so they remain clickable) -->
+<!-- sound & info controls -->
 <div class="sound-control" id="soundControl">
   <div class="sound-wrapper">
     <div class="sound-icon" id="soundIcon" title="Volume">🔊</div>
@@ -98,7 +116,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   </div>
 </div>
 
-<!-- audio (loop enabled) -->
+<!-- audio -->
 <audio id="bgMusic" loop preload="auto">
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
@@ -135,7 +153,6 @@ function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = windo
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-/* particle state */
 let particles = [];
 let pointer = { x: window.innerWidth/2, y: window.innerHeight/2 };
 function updatePointer(e){
@@ -180,22 +197,17 @@ function animate(){
 animate();
 
 /* Overlay click logic */
-/* Make overlay clickable everywhere except when click targets are inside controls */
 let started = false;
 overlay.addEventListener('click', (e) => {
-  // if clicked a control element (sound or info) — ignore overlay start
   if (e.target.closest('.sound-control')) return;
   if (started) return;
   started = true;
 
-  // show dots, hide click text
   clickText.style.display = 'none';
   dots.style.display = 'flex';
 
-  // try play audio (may require user gesture — we are inside click)
   music.play().catch(err => console.log('play failed', err));
 
-  // after 6.75s show profile and hide overlay
   setTimeout(() => {
     overlay.style.opacity = '0';
     bioBox.style.opacity = '1';
@@ -204,16 +216,12 @@ overlay.addEventListener('click', (e) => {
   }, 6750);
 });
 
-/* Sound icon toggles slider (slider placed to the right visually) */
+/* Sound icon toggles slider */
 soundIcon.addEventListener('click', (e) => {
-  e.stopPropagation(); // prevent overlay handler
+  e.stopPropagation();
   volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
 });
-
-/* Volume control */
-volumeSlider.addEventListener('input', () => {
-  music.volume = Number(volumeSlider.value);
-});
+volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
 volumeSlider.value = 0.5; music.volume = 0.5;
 
 /* Info popup */
@@ -222,12 +230,12 @@ infoIcon.addEventListener('click', (e) => {
   infoPopup.classList.toggle('show');
 });
 
-/* make sure clicks on controls don't start overlay when clicking them directly */
+/* Prevent overlay trigger by controls */
 document.querySelectorAll('.sound-control').forEach(el => {
   el.addEventListener('click', (ev) => ev.stopPropagation());
 });
 
-/* Accessibility: allow Enter/Space on overlay to start */
+/* Accessibility: allow Enter/Space */
 overlay.addEventListener('keydown', (e) => {
   if(e.key === 'Enter' || e.key === ' '){ overlay.click(); }
 });
