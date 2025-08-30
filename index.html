@@ -1,97 +1,98 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EnarXena</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{
-  height:100%;
-  font-family:Arial,sans-serif;
-  color:#fff;
-  overflow:hidden;
-  cursor:pointer;
-  background:#000; /* запасной фон */
+*{margin:0;padding:0;box-sizing:border-box;}
+body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cursor:pointer;}
+
+/* Чёрный экран */
+#overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:black; z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:20px;
+  transition:opacity 1s ease;
+}
+#clickText{font-size:22px;color:white;cursor:pointer;}
+.dots{display:none;font-size:16px;font-weight:bold;letter-spacing:8px;}
+.dot{display:inline-block;animation: moveDots 2.5s infinite ease-in-out;}
+.dot:nth-child(1){animation-delay:0s;}
+.dot:nth-child(2){animation-delay:0.4s;}
+.dot:nth-child(3){animation-delay:0.8s;}
+@keyframes moveDots{
+  0%{transform:translateX(0);opacity:1;}
+  50%{transform:translateX(10px);opacity:0.4;}
+  100%{transform:translateX(0);opacity:1;}
 }
 
-/* Video background */
+/* Видео фон */
 .video-background{
   position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
+  top:0;left:0;
+  width:100%;height:100%;
   object-fit:cover;
-  z-index:0; /* всегда на фоне */
+  z-index:-1;
 }
 
-/* Overlay */
-#overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.85); /* полупрозрачное затемнение */
-  z-index:100;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:20px;
-  transition:opacity .9s ease;
-}
-#clickText{font-size:22px;color:#fff;user-select:none}
-.dots{display:none;font-size:18px;font-weight:700;letter-spacing:10px}
-.dot{display:inline-block; animation: moveDots 6.75s infinite ease-in-out}
-.dot:nth-child(1){animation-delay:0s}
-.dot:nth-child(2){animation-delay:.6s}
-.dot:nth-child(3){animation-delay:1.2s}
-@keyframes moveDots{
-  0%{transform:translateX(0);opacity:1}
-  50%{transform:translateX(10px);opacity:.35}
-  100%{transform:translateX(0);opacity:1}
-}
-
-/* Center profile */
+/* Центр */
 .center-box{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  background:rgba(0,0,0,.6);padding:40px;border-radius:20px;text-align:center;
-  z-index:5;opacity:0;transition:opacity .6s ease,transform .25s ease;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.6);
+  padding:40px;
+  border-radius:20px;
+  text-align:center;
+  z-index:5;
+  opacity:0;
+  transition:transform 0.3s, opacity 0.5s;
 }
-.center-box:hover{transform:translate(-50%,-50%) scale(1.05)}
-.avatar{width:120px;height:120px;border-radius:50%;margin-bottom:20px;border:3px solid #fff;display:block;margin-left:auto;margin-right:auto}
-.nickname{font-size:1.8rem;font-weight:700;text-shadow:0 0 10px #fff;margin-bottom:12px}
-.social-links{display:flex;gap:8px;justify-content:center;align-items:center}
-.social-links a{color:#fff;text-decoration:none;font-weight:700;padding:2px 6px}
+.center-box:hover{transform:translate(-50%,-50%) scale(1.05);}
+.avatar{width:120px;height:120px;border-radius:50%;margin-bottom:20px;border:3px solid #fff;}
+.nickname{font-size:1.8rem;font-weight:bold;text-shadow:0 0 10px #fff;margin-bottom:15px;}
+.social-links{display:flex;gap:6px;justify-content:center;margin-bottom:12px;}
+.social-links a{color:#fff;text-decoration:none;font-weight:bold;transition:0.3s;text-shadow:0 0 10px #fff;}
+.social-links a:hover{opacity:0.7;}
 
-/* Sound & info panel */
-.sound-control{position:fixed;left:20px;top:20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;z-index:200}
-.sound-wrapper{display:flex;align-items:center;gap:8px}
-.sound-icon,.info-icon{
-  width:30px;height:30px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;user-select:none;transition:transform .15s ease,box-shadow .15s ease;
+/* Панель звука и инфо */
+.sound-control{
+  position:fixed;top:20px;left:20px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  color:#fff;font-weight:bold;z-index:10;
 }
-.sound-icon:hover,.info-icon:hover{transform:scale(1.12);box-shadow:0 0 10px rgba(255,255,255,.06)}
-.volume-slider{display:none;width:120px;height:6px;-webkit-appearance:none;background:transparent}
-.volume-slider::-webkit-slider-runnable-track{height:6px;background:#444;border-radius:6px}
-.volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;margin-top:-4px;box-shadow:0 0 6px rgba(0,0,0,.6)}
-.info-wrapper{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
-.info-popup{max-height:0;overflow:hidden;background:rgba(0,0,0,.6);padding:0 12px;border-radius:10px;transition:max-height .35s ease,padding .35s ease;color:#fff;font-size:.95rem}
-.info-popup.show{max-height:240px;padding:8px 12px}
+.sound-wrapper{display:flex;align-items:center;gap:8px;}
+.volume-slider{display:none;width:100px;}
+.sound-icon{
+  width:25px;height:25px;border-radius:50%;
+  background:#000;color:#fff;display:flex;justify-content:center;align-items:center;
+  cursor:pointer;transition: transform 0.2s;
+}
+.sound-icon:hover{transform:scale(1.2);}
+.info-wrapper{display:flex;align-items:flex-start;gap:8px;margin-top:4px;}
+.info-icon{
+  width:25px;height:25px;border-radius:50%;
+  background:#000;color:#fff;display:flex;justify-content:center;align-items:center;
+  font-weight:bold;cursor:pointer;transition:transform 0.2s;
+}
+.info-icon:hover{transform:scale(1.2);}
+.info-popup{
+  max-height:0;overflow:hidden;background:rgba(0,0,0,0.6);
+  padding:0 12px;border-radius:10px;font-size:0.9rem;line-height:1.5;
+  transition:max-height 0.4s ease,padding 0.4s ease;color:#fff;
+}
+.info-popup.show{max-height:500px;padding:8px 12px;}
+.info-popup div{margin-bottom:4px;}
 
-/* Particles canvas */
-#particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:1}
+/* Canvas частиц */
+#particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 </style>
 </head>
 <body>
 
-<canvas id="particleCanvas"></canvas>
-
-<!-- video background -->
-<video class="video-background" autoplay muted loop playsinline>
-  <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
-</video>
-
-<!-- overlay -->
-<div id="overlay" aria-hidden="false">
+<!-- Overlay -->
+<div id="overlay">
   <div id="clickText">Click to enter</div>
   <div class="dots" id="dots">
     <span class="dot">•</span>
@@ -100,14 +101,35 @@ html,body{
   </div>
 </div>
 
-<!-- sound & info controls -->
+<!-- Видео фон -->
+<video class="video-background" autoplay muted loop playsinline>
+  <source src="./6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
+</video>
+
+<!-- Музыка -->
+<audio id="bgMusic" loop>
+  <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
+</audio>
+
+<!-- Центр профиль -->
+<div class="center-box" id="bioBox">
+  <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
+  <div class="nickname">EnarXena</div>
+  <div class="social-links">
+    <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a> ·
+    <a href="https://www.tiktok.com/@enarxena" target="_blank">TikTok</a> ·
+    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
+  </div>
+</div>
+
+<!-- Панель звука и инфо -->
 <div class="sound-control" id="soundControl">
   <div class="sound-wrapper">
-    <div class="sound-icon" id="soundIcon" title="Volume">🔊</div>
-    <input id="volumeSlider" class="volume-slider" type="range" min="0" max="1" step="0.01" />
+    <div class="sound-icon" id="soundIcon">🔊</div>
+    <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
   </div>
   <div class="info-wrapper">
-    <div class="info-icon" id="infoIcon" title="Info">i</div>
+    <div class="info-icon" id="infoIcon">i</div>
     <div class="info-popup" id="infoPopup">
       <div>• участник клана Ez</div>
       <div>• участник XIII Squad</div>
@@ -116,129 +138,77 @@ html,body{
   </div>
 </div>
 
-<!-- audio -->
-<audio id="bgMusic" loop preload="auto">
-  <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
-</audio>
-
-<!-- center profile -->
-<div class="center-box" id="bioBox" aria-hidden="true">
-  <img class="avatar" src="Hokage_Minato.webp" alt="Аватар">
-  <div class="nickname">EnarXena</div>
-  <div class="social-links">
-    <a href="http://discordapp.com/users/1011897465605201981" target="_blank" rel="noopener">Discord</a>
-    <span>·</span>
-    <a href="https://www.tiktok.com/@enarxena" target="_blank" rel="noopener">TikTok</a>
-    <span>·</span>
-    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank" rel="noopener">Steam</a>
-  </div>
-</div>
+<!-- Canvas для частиц -->
+<canvas id="particleCanvas"></canvas>
 
 <script>
-/* ELEMENTS */
-const overlay = document.getElementById('overlay');
-const clickText = document.getElementById('clickText');
-const dots = document.getElementById('dots');
-const music = document.getElementById('bgMusic');
-const bioBox = document.getElementById('bioBox');
-const soundIcon = document.getElementById('soundIcon');
-const volumeSlider = document.getElementById('volumeSlider');
-const infoIcon = document.getElementById('infoIcon');
-const infoPopup = document.getElementById('infoPopup');
+const overlay = document.getElementById("overlay");
+const clickText = document.getElementById("clickText");
+const dots = document.getElementById("dots");
+const music = document.getElementById("bgMusic");
+const bioBox = document.getElementById("bioBox");
+const slider = document.getElementById("volumeSlider");
+const soundIcon = document.getElementById("soundIcon");
+const infoIcon = document.getElementById("infoIcon");
+const infoPopup = document.getElementById("infoPopup");
 
-/* particles canvas setup */
+let started = false;
+
+overlay.addEventListener("click", ()=>{
+  if(started) return;
+  started=true;
+  clickText.style.display="none";
+  dots.style.display="block";
+  music.play().catch(err=>console.log(err));
+
+  setTimeout(()=>{
+    overlay.style.opacity="0";
+    bioBox.style.opacity="1";
+    setTimeout(()=>overlay.style.display="none",1000);
+  },6750); // 6.75 секунд
+});
+
+// Ползунок громкости справа
+soundIcon.addEventListener("click", ()=>{
+  slider.style.display = slider.style.display==="none" ? "inline-block" : "none";
+});
+slider.addEventListener("input", ()=>{ music.volume = slider.value; });
+music.volume=0.5;
+slider.value=0.5;
+
+// Инфо
+infoIcon.addEventListener("click", ()=>{ infoPopup.classList.toggle("show"); });
+
+// Частицы
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
-function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+let particles=[];
+let mouse={x:window.innerWidth/2,y:window.innerHeight/2};
+canvas.width=window.innerWidth; canvas.height=window.innerHeight;
 
-let particles = [];
-let pointer = { x: window.innerWidth/2, y: window.innerHeight/2 };
-function updatePointer(e){
-  if(e.touches && e.touches[0]){ pointer.x = e.touches[0].clientX; pointer.y = e.touches[0].clientY; }
-  else{ pointer.x = e.clientX; pointer.y = e.clientY; }
+function updateMouse(e){
+  if(e.touches){ mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; }
+  else{ mouse.x=e.clientX; mouse.y=e.clientY; }
 }
-window.addEventListener('mousemove', updatePointer);
-window.addEventListener('touchmove', updatePointer, {passive:true});
+window.addEventListener('mousemove',updateMouse);
+window.addEventListener('touchmove',updateMouse);
 
-class Particle {
+class Particle{
   constructor(){
-    this.x = pointer.x;
-    this.y = pointer.y;
-    this.size = Math.random()*2 + 0.6;
-    this.vx = (Math.random()-0.5) * 1.6;
-    this.vy = (Math.random()-0.5) * 1.6;
-    const g = Math.floor(Math.random()*180 + 20);
-    this.color = `rgb(${g},${g},${g})`;
+    this.x=mouse.x; this.y=mouse.y;
+    this.size=Math.random()*2+1;
+    this.speedX=(Math.random()-0.5)*2;
+    this.speedY=(Math.random()-0.5)*2;
+    const gray=Math.floor(Math.random()*256);
+    this.color=`rgb(${gray},${gray},${gray})`;
   }
-  update(){
-    this.x += this.vx;
-    this.y += this.vy;
-    if(this.size > 0.09) this.size -= 0.03;
-  }
-  draw(){ ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+  update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.size>0.1)this.size-=0.05; }
+  draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
-
-function handleParticles(){
-  particles.push(new Particle());
-  for(let i=0;i<particles.length;i++){
-    particles[i].update();
-    particles[i].draw();
-    if(particles[i].size <= 0.09){ particles.splice(i,1); i--; }
-  }
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  handleParticles();
-  requestAnimationFrame(animate);
-}
+function handleParticles(){ particles.push(new Particle()); for(let i=0;i<particles.length;i++){ particles[i].update(); particles[i].draw(); if(particles[i].size<=0.1){ particles.splice(i,1); i--; }}}
+function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate);}
 animate();
-
-/* Overlay click logic */
-let started = false;
-overlay.addEventListener('click', (e) => {
-  if (e.target.closest('.sound-control')) return;
-  if (started) return;
-  started = true;
-
-  clickText.style.display = 'none';
-  dots.style.display = 'flex';
-
-  music.play().catch(err => console.log('play failed', err));
-
-  setTimeout(() => {
-    overlay.style.opacity = '0';
-    bioBox.style.opacity = '1';
-    bioBox.setAttribute('aria-hidden','false');
-    setTimeout(()=> { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden','true'); }, 900);
-  }, 6750);
-});
-
-/* Sound icon toggles slider */
-soundIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
-});
-volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
-volumeSlider.value = 0.5; music.volume = 0.5;
-
-/* Info popup */
-infoIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  infoPopup.classList.toggle('show');
-});
-
-/* Prevent overlay trigger by controls */
-document.querySelectorAll('.sound-control').forEach(el => {
-  el.addEventListener('click', (ev) => ev.stopPropagation());
-});
-
-/* Accessibility: allow Enter/Space */
-overlay.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter' || e.key === ' '){ overlay.click(); }
-});
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
 </script>
 </body>
 </html>
