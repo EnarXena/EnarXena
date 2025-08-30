@@ -8,11 +8,18 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cursor:pointer;background:#000}
 
-/* Overlay */
+/* Overlay (чисто черный) */
 #overlay{
-  position:fixed;inset:0;
-  background:#000; z-index:100;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  position:fixed;
+  inset:0;
+  background-color:#000 !important;
+  opacity:1 !important;
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
   transition:opacity .9s ease;
 }
 #clickText{font-size:22px;color:#fff;user-select:none}
@@ -101,7 +108,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
 
-<!-- center profile -->
+<!-- profile -->
 <div class="center-box" id="bioBox" aria-hidden="true">
   <img class="avatar" src="Hokage_Minato.webp" alt="Аватар">
   <div class="nickname">EnarXena</div>
@@ -115,7 +122,6 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 </div>
 
 <script>
-/* ELEMENTS */
 const overlay = document.getElementById('overlay');
 const clickText = document.getElementById('clickText');
 const dots = document.getElementById('dots');
@@ -126,14 +132,13 @@ const volumeSlider = document.getElementById('volumeSlider');
 const infoIcon = document.getElementById('infoIcon');
 const infoPopup = document.getElementById('infoPopup');
 
-/* particles canvas setup */
+/* particles */
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-/* particle state */
 let particles = [];
 let pointer = { x: window.innerWidth/2, y: window.innerHeight/2 };
 function updatePointer(e){
@@ -160,7 +165,6 @@ class Particle {
   }
   draw(){ ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
-
 function handleParticles(){
   particles.push(new Particle());
   for(let i=0;i<particles.length;i++){
@@ -169,7 +173,6 @@ function handleParticles(){
     if(particles[i].size <= 0.09){ particles.splice(i,1); i--; }
   }
 }
-
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   handleParticles();
@@ -177,7 +180,7 @@ function animate(){
 }
 animate();
 
-/* Overlay click logic */
+/* overlay click */
 let started = false;
 overlay.addEventListener('click', (e) => {
   if (e.target.closest('.sound-control')) return;
@@ -189,31 +192,23 @@ overlay.addEventListener('click', (e) => {
 
   music.play().catch(err => console.log('play failed', err));
 
-  // Через 6.75 секунд полностью убираем чёрный экран
   setTimeout(() => {
     overlay.style.opacity = '0';
     bioBox.style.opacity = '1';
     bioBox.setAttribute('aria-hidden','false');
-    setTimeout(()=> { 
-      overlay.style.display = 'none'; 
-      overlay.setAttribute('aria-hidden','true'); 
-    }, 900);
+    setTimeout(()=> { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden','true'); }, 900);
   }, 6750);
 });
 
-/* Sound icon */
+/* sound control */
 soundIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
 });
-
-/* Volume control */
-volumeSlider.addEventListener('input', () => {
-  music.volume = Number(volumeSlider.value);
-});
+volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
 volumeSlider.value = 0.5; music.volume = 0.5;
 
-/* Info popup */
+/* info control */
 infoIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   infoPopup.classList.toggle('show');
