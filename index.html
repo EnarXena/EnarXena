@@ -13,7 +13,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   position:fixed;inset:0;
   background:#000; z-index:100;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-  transition:opacity .9s ease, background 1s ease;
+  transition:opacity .9s ease;
 }
 #clickText{font-size:22px;color:#fff;user-select:none}
 .dots{display:none;font-size:18px;font-weight:700;letter-spacing:10px}
@@ -189,12 +189,7 @@ overlay.addEventListener('click', (e) => {
 
   music.play().catch(err => console.log('play failed', err));
 
-  // через 0.5с слегка прозрачный
-  setTimeout(() => {
-    overlay.style.background = "rgba(0,0,0,0.85)";
-  }, 500);
-
-  // через 6.75с полностью убираем
+  // Через 6.75 секунд полностью убираем чёрный экран
   setTimeout(() => {
     overlay.style.opacity = '0';
     bioBox.style.opacity = '1';
