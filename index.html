@@ -10,16 +10,10 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 
 /* Overlay */
 #overlay{
-  position:fixed;
-  inset:0;
-  background:#000; /* в начале полностью чёрный */
-  z-index:100;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:20px;
-  transition:opacity .9s ease, background 1.2s ease;
+  position:fixed;inset:0;
+  background:#000; z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  transition:opacity .9s ease, background 1s ease;
 }
 #clickText{font-size:22px;color:#fff;user-select:none}
 .dots{display:none;font-size:18px;font-weight:700;letter-spacing:10px}
@@ -76,7 +70,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   <source src="6595017941_1_tiktok_68aeb0f68ecb01_57890512.mp4" type="video/mp4">
 </video>
 
-<!-- overlay (click to start) -->
+<!-- overlay -->
 <div id="overlay" aria-hidden="false">
   <div id="clickText">Click to enter</div>
   <div class="dots" id="dots">
@@ -107,7 +101,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   <source src="zxcursed - supernxva (текст песни).mp3" type="audio/mpeg">
 </audio>
 
-<!-- profile -->
+<!-- center profile -->
 <div class="center-box" id="bioBox" aria-hidden="true">
   <img class="avatar" src="Hokage_Minato.webp" alt="Аватар">
   <div class="nickname">EnarXena</div>
@@ -121,6 +115,7 @@ html,body{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 </div>
 
 <script>
+/* ELEMENTS */
 const overlay = document.getElementById('overlay');
 const clickText = document.getElementById('clickText');
 const dots = document.getElementById('dots');
@@ -131,13 +126,14 @@ const volumeSlider = document.getElementById('volumeSlider');
 const infoIcon = document.getElementById('infoIcon');
 const infoPopup = document.getElementById('infoPopup');
 
-/* particles canvas */
+/* particles canvas setup */
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
+/* particle state */
 let particles = [];
 let pointer = { x: window.innerWidth/2, y: window.innerHeight/2 };
 function updatePointer(e){
@@ -157,9 +153,14 @@ class Particle {
     const g = Math.floor(Math.random()*180 + 20);
     this.color = `rgb(${g},${g},${g})`;
   }
-  update(){ this.x += this.vx; this.y += this.vy; if(this.size > 0.09) this.size -= 0.03; }
+  update(){
+    this.x += this.vx;
+    this.y += this.vy;
+    if(this.size > 0.09) this.size -= 0.03;
+  }
   draw(){ ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
 }
+
 function handleParticles(){
   particles.push(new Particle());
   for(let i=0;i<particles.length;i++){
@@ -168,7 +169,12 @@ function handleParticles(){
     if(particles[i].size <= 0.09){ particles.splice(i,1); i--; }
   }
 }
-function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); handleParticles(); requestAnimationFrame(animate); }
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  handleParticles();
+  requestAnimationFrame(animate);
+}
 animate();
 
 /* Overlay click logic */
@@ -183,30 +189,40 @@ overlay.addEventListener('click', (e) => {
 
   music.play().catch(err => console.log('play failed', err));
 
-  // фон становится полупрозрачным через 0.5 сек
+  // через 0.5с слегка прозрачный
   setTimeout(() => {
     overlay.style.background = "rgba(0,0,0,0.85)";
   }, 500);
 
-  // через 6.75 сек — убираем overlay
+  // через 6.75с полностью убираем
   setTimeout(() => {
     overlay.style.opacity = '0';
     bioBox.style.opacity = '1';
     bioBox.setAttribute('aria-hidden','false');
-    setTimeout(()=> { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden','true'); }, 900);
+    setTimeout(()=> { 
+      overlay.style.display = 'none'; 
+      overlay.setAttribute('aria-hidden','true'); 
+    }, 900);
   }, 6750);
 });
 
-/* sound + info */
+/* Sound icon */
 soundIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   volumeSlider.style.display = (volumeSlider.style.display === 'inline-block') ? 'none' : 'inline-block';
 });
-volumeSlider.addEventListener('input', () => { music.volume = Number(volumeSlider.value); });
+
+/* Volume control */
+volumeSlider.addEventListener('input', () => {
+  music.volume = Number(volumeSlider.value);
+});
 volumeSlider.value = 0.5; music.volume = 0.5;
-infoIcon.addEventListener('click', (e) => { e.stopPropagation(); infoPopup.classList.toggle('show'); });
-document.querySelectorAll('.sound-control').forEach(el => { el.addEventListener('click', (ev) => ev.stopPropagation()); });
-overlay.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ overlay.click(); } });
+
+/* Info popup */
+infoIcon.addEventListener('click', (e) => {
+  e.stopPropagation();
+  infoPopup.classList.toggle('show');
+});
 </script>
 </body>
 </html>
