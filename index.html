@@ -74,9 +74,14 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   background:#000;color:#fff;display:flex;
   justify-content:center;align-items:center;
   font-weight:bold;cursor:pointer;
-  transition:transform 0.2s;
+  transition:transform 0.3s ease;
 }
 .sound-icon:hover,.info-icon:hover{transform:scale(1.2);}
+
+/* Сжатая версия кнопки звука */
+.sound-icon.shrunk{
+  transform: scale(0.6);
+}
 
 /* --- черно-белый ползунок --- */
 .volume-slider{
@@ -87,7 +92,7 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 }
 .volume-slider.show{opacity:1;width:120px;}
 
-/* бегунок (ползунок) */
+/* бегунок */
 .volume-slider::-webkit-slider-thumb{
   appearance:none;width:14px;height:14px;
   border-radius:50%;background:#fff;cursor:pointer;
@@ -192,6 +197,7 @@ overlay.addEventListener("click", ()=>{
 // звук
 soundIcon.addEventListener("click", ()=>{
   slider.classList.toggle("show");
+  soundIcon.classList.toggle("shrunk");
 });
 slider.addEventListener("input", ()=>{ music.volume = slider.value; });
 music.volume=0.5; slider.value=0.5;
