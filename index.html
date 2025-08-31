@@ -60,7 +60,7 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 .social-links a{color:#fff;text-decoration:none;font-weight:bold;transition:0.3s;text-shadow:0 0 10px #fff;}
 .social-links a:hover{opacity:0.7;}
 
-/* Панель звука и инфо */
+/* Панель управления */
 .sound-control{
   position:fixed;top:20px;left:20px;
   display:flex;flex-direction:column;gap:10px;
@@ -76,11 +76,8 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   font-weight:bold;cursor:pointer;
   transition:transform 0.3s ease;
 }
-.sound-icon:hover,.info-icon:hover{transform:scale(1.2);}
-
-/* Сжатая версия кнопки звука */
-.sound-icon.shrunk{
-  transform: scale(0.6);
+.sound-icon:active, .info-icon:active{
+  transform:scale(0.8);
 }
 
 /* --- черно-белый ползунок --- */
@@ -91,8 +88,6 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   opacity:0;width:0;overflow:hidden;
 }
 .volume-slider.show{opacity:1;width:120px;}
-
-/* бегунок */
 .volume-slider::-webkit-slider-thumb{
   appearance:none;width:14px;height:14px;
   border-radius:50%;background:#fff;cursor:pointer;
@@ -104,11 +99,12 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 
 /* инфо */
 .info-popup{
-  max-height:0;overflow:hidden;background:rgba(0,0,0,0.6);
-  padding:0 12px;border-radius:10px;font-size:0.9rem;line-height:1.5;
-  transition:max-height 0.4s ease,padding 0.4s ease;color:#fff;
+  max-width:0;overflow:hidden;background:rgba(0,0,0,0.6);
+  border-radius:10px;font-size:0.9rem;line-height:1.5;
+  transition:max-width 0.4s ease,padding 0.4s ease;
+  color:#fff;white-space:nowrap;
 }
-.info-popup.show{max-height:500px;padding:8px 12px;}
+.info-popup.show{max-width:250px;padding:6px 12px;}
 .info-popup div{margin-bottom:4px;}
 
 /* Canvas частиц */
@@ -191,19 +187,20 @@ overlay.addEventListener("click", ()=>{
     overlay.style.opacity="0";
     bioBox.style.opacity="1";
     setTimeout(()=>overlay.style.display="none",1000);
-  },6750); // 6.75 секунд
+  },6750);
 });
 
 // звук
 soundIcon.addEventListener("click", ()=>{
   slider.classList.toggle("show");
-  soundIcon.classList.toggle("shrunk");
 });
 slider.addEventListener("input", ()=>{ music.volume = slider.value; });
 music.volume=0.5; slider.value=0.5;
 
 // инфо
-infoIcon.addEventListener("click", ()=>{ infoPopup.classList.toggle("show"); });
+infoIcon.addEventListener("click", ()=>{
+  infoPopup.classList.toggle("show");
+});
 
 // Частицы
 const canvas = document.getElementById('particleCanvas');
