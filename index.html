@@ -62,14 +62,60 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
   display:flex;flex-direction:column;align-items:flex-start;gap:8px;
   color:#fff;font-weight:bold;z-index:10;
 }
-.sound-wrapper{display:flex;align-items:center;gap:8px;}
-.volume-slider{display:none;width:100px;}
-.sound-icon{
-  width:25px;height:25px;border-radius:50%;
-  background:#000;color:#fff;display:flex;justify-content:center;align-items:center;
-  cursor:pointer;transition: transform 0.2s;
+
+/* Новый стиль панели громкости */
+.sound-panel {
+  display: flex;
+  align-items: center;
+  background: rgba(20, 10, 20, 0.9);
+  padding: 6px 10px;
+  border-radius: 12px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.6);
 }
-.sound-icon:hover{transform:scale(1.2);}
+
+.sound-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.6);
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  width: 120px;
+  height: 6px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #6dd5ed, #c471ed);
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #294b66;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #294b66;
+  cursor: pointer;
+}
+
 .info-wrapper{display:flex;align-items:flex-start;gap:8px;margin-top:4px;}
 .info-icon{
   width:25px;height:25px;border-radius:50%;
@@ -124,8 +170,8 @@ body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cu
 
 <!-- Панель звука и инфо -->
 <div class="sound-control" id="soundControl">
-  <div class="sound-wrapper">
-    <div class="sound-icon" id="soundIcon">🔊</div>
+  <div class="sound-panel">
+    <div class="sound-btn" id="soundIcon">🔊</div>
     <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
   </div>
   <div class="info-wrapper">
@@ -168,10 +214,7 @@ overlay.addEventListener("click", ()=>{
   },6750); // 6.75 секунд
 });
 
-// Ползунок громкости справа
-soundIcon.addEventListener("click", ()=>{
-  slider.style.display = slider.style.display==="none" ? "inline-block" : "none";
-});
+// Громкость
 slider.addEventListener("input", ()=>{ music.volume = slider.value; });
 music.volume=0.5;
 slider.value=0.5;
