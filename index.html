@@ -116,9 +116,9 @@
   </div>
 </div>
 
-<!-- Видео фон (ЗАМЕНЕНО ВИДЕО) -->
+<!-- ВИДЕО (обновлённый файл) -->
 <video class="video-background" autoplay muted loop playsinline>
-  <source src="./5054174001_1_tiktok_68c48812729150_26054455.mp4" type="video/mp4">
+  <source src="./5076948292_1_tiktok_685c12598b1670_58914372.mp4" type="video/mp4">
 </video>
 
 <!-- Музыка -->
@@ -218,6 +218,7 @@
     update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.1) this.size -= 0.05; }
     draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
   }
+
   function handleParticles() {
     particles.push(new Particle());
     for (let i = 0; i < particles.length; i++) {
@@ -228,13 +229,18 @@
       }
     }
   }
+
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     handleParticles();
     requestAnimationFrame(animate);
   }
+
   animate();
-  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
 </script>
 </body>
 </html>
