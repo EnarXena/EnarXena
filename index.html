@@ -1,274 +1,427 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EnarXena</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body,html{height:100%;font-family:Arial,sans-serif;color:#fff;overflow:hidden;cursor:pointer;}
-
-    #overlay{
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      background:black; z-index:100;
-      display:flex;align-items:center;justify-content:center;
-      flex-direction:column;gap:20px;
-      transition:opacity 1s ease;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    #clickText{font-size:22px;color:white;cursor:pointer;}
-    .dots{display:none;font-size:16px;font-weight:bold;letter-spacing:8px;}
-    .dot{display:inline-block;animation: moveDots 2.5s infinite ease-in-out;}
-    .dot:nth-child(1){animation-delay:0s;}
-    .dot:nth-child(2){animation-delay:0.4s;}
-    .dot:nth-child(3){animation-delay:0.8s;}
-    @keyframes moveDots{
-      0%{transform:translateX(0);opacity:1;}
-      50%{transform:translateX(10px);opacity:0.4;}
-      100%{transform:translateX(0);opacity:1;}
+    body,
+    html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      overflow: hidden;
+      cursor: pointer;
     }
 
-    .video-background{
-      position:fixed;
-      top:0;left:0;
-      width:100%;height:100%;
-      object-fit:cover;
-      z-index:-1;
+    /* Чёрный экран */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      transition: opacity 1s ease;
+    }
+    #clickText {
+      font-size: 22px;
+      color: white;
+      cursor: pointer;
+    }
+    .dots {
+      display: none;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 8px;
+    }
+    .dot {
+      display: inline-block;
+      animation: moveDots 2.5s infinite ease-in-out;
+    }
+    .dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .dot:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+    .dot:nth-child(3) {
+      animation-delay: 0.8s;
+    }
+    @keyframes moveDots {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(10px);
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
-    .center-box{
-      position:absolute;top:50%;left:50%;
-      transform:translate(-50%,-50%);
-      background:rgba(0,0,0,0.6);
-      padding:40px;
-      border-radius:20px;
-      text-align:center;
-      z-index:5;
-      opacity:0;
-      transition:transform 0.3s, opacity 0.5s;
-    }
-    .center-box:hover{transform:translate(-50%,-50%) scale(1.05);}
-    .avatar{
-      width:120px;height:120px;border-radius:50%;
-      margin-bottom:20px;border:3px solid #fff;
-      object-fit:cover;
-    }
-    .nickname{font-size:1.8rem;font-weight:bold;text-shadow:0 0 10px #fff;margin-bottom:15px;}
-    .social-links{display:flex;gap:6px;justify-content:center;margin-bottom:12px;}
-    .social-links a{color:#fff;text-decoration:none;font-weight:bold;transition:0.3s;text-shadow:0 0 10px #fff;}
-    .social-links a:hover{opacity:0.7;}
-
-    .sound-control{
-      position:fixed;top:20px;left:20px;
-      display:flex;flex-direction:column;gap:10px;
-      z-index:10;color:#fff;
-    }
-    .sound-wrapper, .info-wrapper{
-      display:flex;align-items:center;gap:10px;
-    }
-    .sound-icon, .info-icon{
-      width:30px;height:30px;border-radius:50%;
-      background:#000;color:#fff;display:flex;
-      justify-content:center;align-items:center;
-      font-weight:bold;cursor:pointer;
-      transition:transform 0.3s ease;
-    }
-    .sound-icon:active, .info-icon:active{
-      transform:scale(0.85);
+    /* Видео фон */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
     }
 
-    .volume-slider{
-      appearance:none;height:6px;
-      background:#000;border-radius:5px;
-      outline:none;
-      opacity:0;transition:opacity 0.3s;
+    /* Центр */
+    .center-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      z-index: 5;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.5s;
     }
-    .volume-slider.show{opacity:1;}
-    .volume-slider::-webkit-slider-thumb{
-      appearance:none;width:14px;height:14px;
-      border-radius:50%;background:#fff;cursor:pointer;
+    .center-box:hover {
+      transform: translate(-50%, -50%) scale(1.05);
     }
-    .volume-slider::-moz-range-thumb{
-      width:14px;height:14px;
-      border-radius:50%;background:#fff;cursor:pointer;
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 3px solid #fff;
+      object-fit: cover;
+    }
+    .nickname {
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px #fff;
+      margin-bottom: 15px;
+    }
+    .social-links {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .social-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+      text-shadow: 0 0 10px #fff;
+    }
+    .social-links a:hover {
+      opacity: 0.7;
     }
 
-    .info-popup{
-      opacity:0;transition:opacity 0.3s;
-      background:rgba(0,0,0,0.6);
-      border-radius:10px;font-size:0.9rem;line-height:1.5;
-      padding:6px 12px;white-space:nowrap;
+    /* Панель управления */
+    .sound-control {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+      color: #fff;
     }
-    .info-popup.show{opacity:1;}
-    .info-popup div{margin-bottom:4px;}
+    .sound-wrapper,
+    .info-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sound-icon,
+    .info-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .sound-icon:active,
+    .info-icon:active {
+      transform: scale(0.85);
+    }
 
-    #particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+    /* --- черно-белый ползунок --- */
+    .volume-slider {
+      appearance: none;
+      height: 6px;
+      background: #000;
+      border-radius: 5px;
+      outline: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .volume-slider.show {
+      opacity: 1;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+    .volume-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    /* инфо */
+    .info-popup {
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      padding: 6px 12px;
+      white-space: nowrap;
+    }
+    .info-popup.show {
+      opacity: 1;
+    }
+    .info-popup div {
+      margin-bottom: 4px;
+    }
+
+    /* Canvas частиц */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
-
-<!-- Overlay -->
-<div id="overlay">
-  <div id="clickText">Click to enter</div>
-  <div class="dots" id="dots">
-    <span class="dot">•</span>
-    <span class="dot">•</span>
-    <span class="dot">•</span>
-  </div>
-</div>
-
-<!-- ВИДЕО -->
-<video class="video-background" autoplay muted loop playsinline>
-  <source src="./5076948292_1_tiktok_685c12598b1670_58914372.mp4" type="video/mp4">
-</video>
-
-<!-- МУЗЫКА -->
-<audio id="bgMusic" loop>
-  <source src="akkiemi_-_winter_shards_(SkySound.cc).mp3" type="audio/mpeg">
-</audio>
-
-<!-- Центр профиль -->
-<div class="center-box" id="bioBox">
-  <img src="Hokage_Minato.webp" alt="Аватар" class="avatar">
-  <div class="nickname">EnarXena</div>
-  <div class="social-links">
-    <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a> ·
-    <a href="https://www.tiktok.com/@enarxena" target="_blank">TikTok</a> ·
-    <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
-  </div>
-</div>
-
-<!-- Панель звука и инфо -->
-<div class="sound-control">
-  <div class="sound-wrapper">
-    <div class="sound-icon" id="soundIcon">🔊</div>
-    <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
-  </div>
-  <div class="info-wrapper">
-    <div class="info-icon" id="infoIcon">i</div>
-    <div class="info-popup" id="infoPopup">
-      <div>• участник клана Ez</div>
-      <div>• участник XIII Squad</div>
-      <div>• Dota2 · CS:GO2 · osu! player</div>
+  <!-- Overlay -->
+  <div id="overlay">
+    <div id="clickText">Click to enter</div>
+    <div class="dots" id="dots">
+      <span class="dot">•</span>
+      <span class="dot">•</span>
+      <span class="dot">•</span>
     </div>
   </div>
-</div>
 
-<!-- Canvas для частиц -->
-<canvas id="particleCanvas"></canvas>
+  <!-- Видео фон -->
+  <video
+    class="video-background"
+    autoplay
+    muted
+    loop
+    playsinline
+  >
+    <source
+      src="./5076948292_1_tiktok_685c12598b1670_58914372.mp4"
+      type="video/mp4"
+    />
+  </video>
 
-<script>
-  const overlay = document.getElementById("overlay");
-  const clickText = document.getElementById("clickText");
-  const dots = document.getElementById("dots");
-  const music = document.getElementById("bgMusic");
-  const bioBox = document.getElementById("bioBox");
-  const slider = document.getElementById("volumeSlider");
-  const soundIcon = document.getElementById("soundIcon");
-  const infoIcon = document.getElementById("infoIcon");
-  const infoPopup = document.getElementById("infoPopup");
+  <!-- Музыка -->
+  <audio id="bgMusic" loop>
+    <source
+      src="akkiemi_-_winter_shards_(SkySound.cc).mp3"
+      type="audio/mpeg"
+    />
+  </audio>
 
-  let started = false;
+  <!-- Центр профиль -->
+  <div class="center-box" id="bioBox">
+    <img src="image.png" alt="Аватар" class="avatar" />
+    <div class="nickname">EnarXena</div>
+    <div class="social-links">
+      <a
+        href="http://discordapp.com/users/1011897465605201981"
+        target="_blank"
+        >Discord</a
+      >
+      ·
+      <a href="https://www.tiktok.com/@enarxena" target="_blank"
+        >TikTok</a
+      >
+      ·
+      <a
+        href="https://steamcommunity.com/profiles/76561199568234719/"
+        target="_blank"
+        >Steam</a
+      >
+    </div>
+  </div>
 
-  overlay.addEventListener("click", () => {
-    if (started) return;
-    started = true;
-    clickText.style.display = "none";
-    dots.style.display = "block";
-    music.play().catch(err => console.log(err));
+  <!-- Панель звука и инфо -->
+  <div class="sound-control">
+    <div class="sound-wrapper">
+      <div class="sound-icon" id="soundIcon">🔊</div>
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        id="volumeSlider"
+        class="volume-slider"
+      />
+    </div>
+    <div class="info-wrapper">
+      <div class="info-icon" id="infoIcon">i</div>
+      <div class="info-popup" id="infoPopup">
+        <div>• участник клана Ez</div>
+        <div>• участник XIII Squad</div>
+        <div>• Dota2 · CS:GO2 · osu! player</div>
+      </div>
+    </div>
+  </div>
 
-    setTimeout(() => {
-      overlay.style.opacity = "0";
-      bioBox.style.opacity = "1";
-      setTimeout(() => overlay.style.display = "none", 1000);
-    }, 6750);
-  });
+  <!-- Canvas для частиц -->
+  <canvas id="particleCanvas"></canvas>
 
-  soundIcon.addEventListener("click", () => {
-    slider.classList.toggle("show");
-  });
+  <script>
+    const overlay = document.getElementById("overlay");
+    const clickText = document.getElementById("clickText");
+    const dots = document.getElementById("dots");
+    const music = document.getElementById("bgMusic");
+    const bioBox = document.getElementById("bioBox");
+    const slider = document.getElementById("volumeSlider");
+    const soundIcon = document.getElementById("soundIcon");
+    const infoIcon = document.getElementById("infoIcon");
+    const infoPopup = document.getElementById("infoPopup");
 
-  slider.addEventListener("input", () => {
-    music.volume = slider.value;
-  });
+    let started = false;
 
-  music.volume = 0.5;
-  slider.value = 0.5;
+    overlay.addEventListener("click", () => {
+      if (started) return;
+      started = true;
+      clickText.style.display = "none";
+      dots.style.display = "block";
+      music
+        .play()
+        .catch((err) => {
+          console.log(err);
+        });
 
-  infoIcon.addEventListener("click", () => {
-    infoPopup.classList.toggle("show");
-  });
+      setTimeout(() => {
+        overlay.style.opacity = "0";
+        bioBox.style.opacity = "1";
+        setTimeout(() => (overlay.style.display = "none"), 1000);
+      }, 6750);
+    });
 
-  // Частицы
-  const canvas = document.getElementById('particleCanvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+    // звук
+    soundIcon.addEventListener("click", () => {
+      slider.classList.toggle("show");
+    });
+    slider.addEventListener("input", () => {
+      music.volume = slider.value;
+    });
+    music.volume = 0.5;
+    slider.value = 0.5;
 
-  function updateMouse(e) {
-    if (e.touches) {
-      mouse.x = e.touches[0].clientX;
-      mouse.y = e.touches[0].clientY;
-    } else {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    }
-  }
+    // инфо
+    infoIcon.addEventListener("click", () => {
+      infoPopup.classList.toggle("show");
+    });
 
-  window.addEventListener('mousemove', updateMouse);
-  window.addEventListener('touchmove', updateMouse);
-
-  class Particle {
-    constructor() {
-      this.x = mouse.x;
-      this.y = mouse.y;
-      this.size = Math.random() * 2 + 1;
-      this.speedX = (Math.random() - 0.5) * 2;
-      this.speedY = (Math.random() - 0.5) * 2;
-      const gray = Math.floor(Math.random() * 256);
-      this.color = `rgb(${gray},${gray},${gray})`;
-    }
-
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-      if (this.size > 0.1) this.size -= 0.05;
-    }
-
-    draw() {
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  function handleParticles() {
-    particles.push(new Particle());
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update();
-      particles[i].draw();
-      if (particles[i].size <= 0.1) {
-        particles.splice(i, 1);
-        i--;
-      }
-    }
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    handleParticles();
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-
-  window.addEventListener('resize', () => {
+    // Частицы
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  });
-</script>
 
+    function updateMouse(e) {
+      if (e.touches) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      } else {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+    }
+    window.addEventListener("mousemove", updateMouse);
+    window.addEventListener("touchmove", updateMouse);
+
+    class Particle {
+      constructor() {
+        this.x = mouse.x;
+        this.y = mouse.y;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 2;
+        this.speedY = (Math.random() - 0.5) * 2;
+        const gray = Math.floor(Math.random() * 256);
+        this.color = `rgb(${gray},${gray},${gray})`;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.size > 0.1) this.size -= 0.05;
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function handleParticles() {
+      particles.push(new Particle());
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].size <= 0.1) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      handleParticles();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
