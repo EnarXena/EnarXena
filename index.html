@@ -4,25 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EnarXena</title>
+
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    body,
-    html {
+
+    html, body {
       height: 100%;
+      overflow: hidden;
       font-family: Arial, sans-serif;
       color: #fff;
-      overflow: hidden;
       cursor: pointer;
+    }
+
+    /* затемнение поверх видео (чтобы текст читался) */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 0;
     }
 
     #overlay {
       position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       background: black;
@@ -31,38 +42,29 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 20px;
-      transition: opacity 1s ease;
+      transition: 1s;
     }
+
     #clickText {
       font-size: 22px;
-      color: white;
-      cursor: pointer;
     }
+
     .dots {
       display: none;
-      font-size: 16px;
-      font-weight: bold;
-      letter-spacing: 8px;
+      letter-spacing: 10px;
     }
-    .dot {
-      display: inline-block;
-      animation: moveDots 2.5s infinite ease-in-out;
-    }
-    .dot:nth-child(1) { animation-delay: 0s; }
-    .dot:nth-child(2) { animation-delay: 0.4s; }
-    .dot:nth-child(3) { animation-delay: 0.8s; }
 
-    @keyframes moveDots {
-      0% { transform: translateX(0); opacity: 1; }
-      50% { transform: translateX(10px); opacity: 0.4; }
-      100% { transform: translateX(0); opacity: 1; }
+    .dot {
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%,100% {opacity: 1;}
+      50% {opacity: 0.3;}
     }
 
     .video-background {
       position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -74,121 +76,35 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0,0,0,0.6);
       padding: 40px;
       border-radius: 20px;
       text-align: center;
-      z-index: 5;
       opacity: 0;
-      transition: transform 0.3s, opacity 0.5s;
+      transition: 0.5s;
+      z-index: 2;
     }
-    .center-box:hover {
-      transform: translate(-50%, -50%) scale(1.05);
-    }
+
     .avatar {
       width: 120px;
-      height: 120px;
       border-radius: 50%;
-      margin-bottom: 20px;
-      border: 3px solid #fff;
-      object-fit: cover;
-    }
-    .nickname {
-      font-size: 1.8rem;
-      font-weight: bold;
-      text-shadow: 0 0 10px #fff;
       margin-bottom: 15px;
     }
-    .social-links {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-bottom: 12px;
+
+    .nickname {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
     }
+
     .social-links a {
-      color: #fff;
+      color: white;
+      margin: 0 5px;
       text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-      text-shadow: 0 0 10px #fff;
-    }
-    .social-links a:hover { opacity: 0.7; }
-
-    .sound-control {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 10;
-    }
-    .sound-wrapper,
-    .info-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .sound-icon,
-    .info-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .sound-icon:active,
-    .info-icon:active {
-      transform: scale(0.85);
     }
 
-    .volume-slider {
-      appearance: none;
-      height: 6px;
-      background: #000;
-      border-radius: 5px;
-      outline: none;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .volume-slider.show { opacity: 1; }
-    .volume-slider::-webkit-slider-thumb,
-    .volume-slider::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    .info-popup {
-      opacity: 0;
-      transition: opacity 0.3s;
-      background: rgba(0,0,0,0.6);
-      border-radius: 10px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      padding: 6px 12px;
-      white-space: nowrap;
-    }
-    .info-popup.show { opacity: 1; }
-
-    #particleCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
   </style>
 </head>
+
 <body>
 
   <div id="overlay">
@@ -200,117 +116,46 @@
     </div>
   </div>
 
-  <!-- НОВЫЙ ВИДЕО ФОН -->
+  <!-- ВАЖНО: ВСТАВЬ СЮДА СВОЮ ССЫЛКУ -->
   <video class="video-background" autoplay muted loop playsinline>
-    <source src="./5823293843_1_tiktok_69c2aa699606e7_84314282.mp4" type="video/mp4">
+    <source src="https://raw.githubusercontent.com/ТВОЙ_НИК/ТВОЙ_РЕПО/main/5823293843_1_tiktok_69c2aa699606e7_84314282.mp4" type="video/mp4">
   </video>
 
   <audio id="bgMusic" loop>
-    <source src="akkiemi_-_winter_shards_(SkySound.cc).mp3" type="audio/mpeg">
+    <source src="akkiemi_-_winter_shards_(SkySound.cc).mp3">
   </audio>
 
   <div class="center-box" id="bioBox">
     <img src="image.png" class="avatar">
     <div class="nickname">EnarXena</div>
+
     <div class="social-links">
-      <a href="http://discordapp.com/users/1011897465605201981" target="_blank">Discord</a> ·
-      <a href="https://www.tiktok.com/@enarxena" target="_blank">TikTok</a> ·
-      <a href="https://steamcommunity.com/profiles/76561199568234719/" target="_blank">Steam</a>
+      <a href="#">Discord</a>
+      <a href="#">TikTok</a>
+      <a href="#">Steam</a>
     </div>
   </div>
-
-  <div class="sound-control">
-    <div class="sound-wrapper">
-      <div class="sound-icon" id="soundIcon">🔊</div>
-      <input type="range" min="0" max="1" step="0.01" id="volumeSlider" class="volume-slider">
-    </div>
-    <div class="info-wrapper">
-      <div class="info-icon" id="infoIcon">i</div>
-      <div class="info-popup" id="infoPopup">
-        <div>• участник клана Ez</div>
-        <div>• участник XIII Squad</div>
-        <div>• Dota2 · CS2 · osu! player</div>
-      </div>
-    </div>
-  </div>
-
-  <canvas id="particleCanvas"></canvas>
 
   <script>
     const overlay = document.getElementById("overlay");
-    const clickText = document.getElementById("clickText");
     const dots = document.getElementById("dots");
-    const music = document.getElementById("bgMusic");
+    const clickText = document.getElementById("clickText");
     const bioBox = document.getElementById("bioBox");
-    const slider = document.getElementById("volumeSlider");
-    const soundIcon = document.getElementById("soundIcon");
-    const infoIcon = document.getElementById("infoIcon");
-    const infoPopup = document.getElementById("infoPopup");
+    const music = document.getElementById("bgMusic");
 
-    let started = false;
-
-    overlay.addEventListener("click", () => {
-      if (started) return;
-      started = true;
+    overlay.onclick = () => {
       clickText.style.display = "none";
       dots.style.display = "block";
-      music.play().catch(() => {});
+
+      music.play().catch(()=>{});
+
       setTimeout(() => {
         overlay.style.opacity = "0";
         bioBox.style.opacity = "1";
-        setTimeout(() => overlay.style.display = "none", 1000);
-      }, 6750);
-    });
-
-    soundIcon.onclick = () => slider.classList.toggle("show");
-    slider.oninput = () => music.volume = slider.value;
-    music.volume = slider.value = 0.5;
-
-    infoIcon.onclick = () => infoPopup.classList.toggle("show");
-
-    const canvas = document.getElementById("particleCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-    let particles = [];
-    let mouse = { x: innerWidth / 2, y: innerHeight / 2 };
-
-    addEventListener("mousemove", e => mouse = { x: e.clientX, y: e.clientY });
-
-    class Particle {
-      constructor() {
-        this.x = mouse.x;
-        this.y = mouse.y;
-        this.size = Math.random() * 2 + 1;
-        this.speedX = (Math.random() - 0.5) * 2;
-        this.speedY = (Math.random() - 0.5) * 2;
-        let g = Math.floor(Math.random() * 255);
-        this.color = `rgb(${g},${g},${g})`;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.size > 0.1) this.size -= 0.05;
-      }
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.push(new Particle());
-      particles.forEach((p, i) => {
-        p.update();
-        p.draw();
-        if (p.size <= 0.1) particles.splice(i, 1);
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
+        setTimeout(()=>overlay.style.display="none",1000);
+      }, 3000);
+    };
   </script>
+
 </body>
 </html>
